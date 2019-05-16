@@ -14,7 +14,7 @@ public class Menu { // adicionar metodo de pagamento
         }
     }
 
-    public static void payroll(String [][] employees, int current_employees, int day) {
+    public static void payroll(String [][] employees, int current_employees, int day) { // adicionar um metodo de tirar a taxa do sindicato em um dia do mes para todo mundo
         for(int i = 0; i < current_employees; i++) {
             double actual_salary = Double.parseDouble(employees[i][6]);
             double taxes;
@@ -27,15 +27,16 @@ public class Menu { // adicionar metodo de pagamento
 
                     if(employees[i][7].equals("1")) {
                         taxes = Double.parseDouble(employees[i][9]);
-                        taxes = (actual_salary * actual_salary) / 100;
+                        taxes = (actual_salary * taxes) / 100;
                         actual_salary -= taxes;
-                        System.out.println("-%.2lf do sindicato\n", taxes);
+                        System.out.printf("-%.2lf do sindicato\n", taxes);
                     }
                     if(!employees[i][10].equals("0")) {
                         taxes = Double.parseDouble(employees[i][10]);
                         taxes = (actual_salary * actual_salary) / 100;
                         actual_salary -= taxes;
-                        System.out.println("-%.2lf de serviços\n", taxes);
+                        System.out.printf("-%.2lf de serviços\n", taxes);
+                        employees[i][10] = "0";
                     }
 
                     employees[i][6] = Double.toString(actual_salary);
@@ -46,15 +47,31 @@ public class Menu { // adicionar metodo de pagamento
             else if(employees[i][2].equals("3") && !employees[i][5].equals("0")) {
                 if(day == 12 || day == 26) {
                     verify = 1;
+                    double partial_salary = (Double.parseDouble(employees[i][3])) / 2.0;
+                    actual_salary += partial_salary;
+                    System.out.printf("Sálario atuak: %.2lf\n", actual_salary);
+
+                    if(!employees[i][10].equals("0")) {
+                        taxes = Double.parseDouble(employees[i][10]);
+                        taxes = (actual_salary * taxes) / 100;
+                        actual_salary -= taxes;
+                        System.out.printf("-%.2lf de serviços\n", taxes);
+                        employees[i][10] = "0";
+                    }
+
+                    employees[i][6] = Double.toString(actual_salary);
+                    System.out.printf("Foi pago %s ao funcionário %s, de id %s ", employees[i][6], employees[i][0], employees[i][4]);
+                    employees[i][6] = "0";
+
 
                 }
             }
-            else if() {
+            /*else if() {
 
             }
             else if() {
 
-            }
+            }*/ //fazer depois
 
             if(verify == 1) {
                 if(employees[i][11].equals("1")) {

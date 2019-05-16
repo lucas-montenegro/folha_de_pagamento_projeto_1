@@ -14,6 +14,65 @@ public class Menu { // adicionar metodo de pagamento
         }
     }
 
+    public static void payroll(String [][] employees, int current_employees, int day) {
+        for(int i = 0; i < current_employees; i++) {
+            double actual_salary = Double.parseDouble(employees[i][6]);
+            double taxes;
+            int verify = 0; // verifies if the employee received any payment
+
+            if(employees[i][2].equals("3") && employees[i][5].equals("0")) {
+                if(day == 31) {
+                    System.out.printf("Sálario atuak: %.2lf\n", actual_salary);
+                    verify = 1;
+
+                    if(employees[i][7].equals("1")) {
+                        taxes = Double.parseDouble(employees[i][9]);
+                        taxes = (actual_salary * actual_salary) / 100;
+                        actual_salary -= taxes;
+                        System.out.println("-%.2lf do sindicato\n", taxes);
+                    }
+                    if(!employees[i][10].equals("0")) {
+                        taxes = Double.parseDouble(employees[i][10]);
+                        taxes = (actual_salary * actual_salary) / 100;
+                        actual_salary -= taxes;
+                        System.out.println("-%.2lf de serviços\n", taxes);
+                    }
+
+                    employees[i][6] = Double.toString(actual_salary);
+                    System.out.printf("Foi pago %s ao funcionário %s, de id %s ", employees[i][6], employees[i][0], employees[i][4]);
+                    employees[i][6] = "0";
+                }
+            }
+            else if(employees[i][2].equals("3") && !employees[i][5].equals("0")) {
+                if(day == 12 || day == 26) {
+                    verify = 1;
+
+                }
+            }
+            else if() {
+
+            }
+            else if() {
+
+            }
+
+            if(verify == 1) {
+                if(employees[i][11].equals("1")) {
+                    System.out.printf("recebeu o pagamento através de um cheque para %s\n", employees[i][1]);
+                }
+                else if(employees[i][11].equals("2")) {
+                    System.out.println("recebeu o pagamento através de um cheque em mãos");
+                }
+                else if(employees[i][11].equals("3")) {
+                    System.out.println("recebeu o pagamento através de um depósito na conta bancária");
+                }
+            }
+            else {
+                System.out.printf("O funcionário %s não recebeu nenhum pagamento hoje, dia %d\n", employees[i][0], day);
+            }
+        }
+    }
+
     public static void changeData(String [][] employees, int current_employees) {
         Scanner input = new Scanner(System.in);
         System.out.println("Digite o id do funcionário ou digite -1 para ver o número de todos os funcionários:");
@@ -51,6 +110,14 @@ public class Menu { // adicionar metodo de pagamento
                     System.out.println("(1) Horista\n(2) Comissionado\n(3) Salariado");
                     String type = input.nextLine();
                     employees[i][2] = type;
+                }
+
+                System.out.println("Digite 1 para modificar a comissão e 0 para não modificar");
+                option = input.nextLine();
+                if(option.equals("1")) {
+                    System.out.println("Digite a comissão do funcionário, caso não exista digite 0:");
+                    String commission = input.nextLine();
+                    employees[i][5] = commission;
                 }
 
                 System.out.println("Digite 1 para modificar o metódo de pagamento e 0 para não modificar");
@@ -317,16 +384,16 @@ public class Menu { // adicionar metodo de pagamento
         String [][] employees = new String[50][12];
         System.out.println("Bem vindo ao sistema de Folha de Pagamento!");
 
-        int option, id = 1, id_syndicate = 1000, current_employees = 0;
+        int option, id = 1, id_syndicate = 1000, current_employees = 0, day = 1;
 
         while(true) {
             System.out.println("Digite uma das opções abaixo para executar o programa:");
-            System.out.printf("\n0 - Parar o programa\n1 - Adicionar um funcionário\n2 - Remover um funcionário\n3 - Lançar um cartão de ponto\n4 - Adicionar venda\n5 - Adicionar uma taxa de serviço\n6 - Alterar dados de um funcionário\n\n");
+            System.out.printf("\n0 - Parar o programa\n1 - Adicionar um funcionário\n2 - Remover um funcionário\n3 - Lançar um cartão de ponto\n4 - Adicionar venda\n5 - Adicionar uma taxa de serviço\n6 - Alterar dados de um funcionário\n7 - Avançar o dia\n8 - Rodar o sistema de pagamentos\n\n");
             System.out.println("Digite uma das opções:");
             option = input.nextInt();
             System.out.println();
 
-            while(option != 0 && option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6) {
+            while(option != 0 && option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6 && option != 7 && option != 8) {
                 System.out.println("Digite uma opção válida:");
                 option = input.nextInt();
             }
@@ -362,6 +429,23 @@ public class Menu { // adicionar metodo de pagamento
                 changeData(employees, current_employees);
                 System.out.println("Dado(s) modificado(s) com sucesso!");
             }
+            else if(option == 7) {
+                System.out.println("Você realmente deseja avançar o dia? Todas as atividades realizadas serão limpadas");
+                System.out.println("Se deseja avancar o dia digite 1, caso contrário digite 0");
+                option = input.nextInt();
+                if(option == 1) {
+                    day++;
+                    System.out.println("Dia avançado com sucesso!");
+                    //clearActivities(); limpar todas as atividades realizadas no dia
+                }
+                else if(option == 0) {
+                    System.out.println("O dia não foi avançado!");
+                }
+            }
+            else if(option == 8) {
+                payroll(employees, current_employees, day);
+                System.out.println();
+            }
 
 
             System.out.printf("\n-------------------------------------------------------\n\n");
@@ -393,4 +477,17 @@ public class Menu { // adicionar metodo de pagamento
    9 -> taxa do sindicato
    10 -> taxa do servico
    11 -> metodo de pagamento
+
+   Obs: Em relação ao dia, temos:
+   day % 7 = 1 -> Segunda
+   day % 7 = 2 -> Terça
+   day % 7 = 3 -> Quarta
+   day % 7 = 4 -> Quinta
+   day % 7 = 5 -> Sexta
+   day % 7 = 6 -> Sábado
+   day % 7 = 0 -> Domingo
+
+   Obs2: O mês tem 31 dias(para esse programa)
+
+   Obs3: A taxa do sindicato é retirada no último dia útil do mês
  */

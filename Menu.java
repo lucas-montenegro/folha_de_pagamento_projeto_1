@@ -14,6 +14,62 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         }
     }
 
+    public static void copy(String [][][] undo_redo, String [][] employees, int actual_index) {
+        for(int i = 0; i < 50; i++) {
+            employees[i][0] = undo_redo[actual_index][i][0];
+            employees[i][1] = undo_redo[actual_index][i][1];
+            employees[i][2] = undo_redo[actual_index][i][2];
+            employees[i][3] = undo_redo[actual_index][i][3];
+            employees[i][4] = undo_redo[actual_index][i][4];
+            employees[i][5] = undo_redo[actual_index][i][5];
+            employees[i][6] = undo_redo[actual_index][i][6];
+            employees[i][7] = undo_redo[actual_index][i][7];
+            employees[i][8] = undo_redo[actual_index][i][8];
+            employees[i][9] = undo_redo[actual_index][i][9];
+            employees[i][10] = undo_redo[actual_index][i][10];
+            employees[i][11] = undo_redo[actual_index][i][11];
+            employees[i][12] = undo_redo[actual_index][i][12];
+        }
+    }
+
+    public static int undoRedo(String [][][] undo_redo, String [][] employees, int actual_index, int max_index) {
+        Scanner input = new Scanner(System.in);
+        System.out.printf("(1) - Parar\n(2) - Redo\n(3) - Undo\n");
+        int option = input.nextInt();
+
+        if(actual_index == -1) {
+            actual_index = max_index;
+        }
+
+        while(option != 1) {
+            if(option == 2) {
+                if(actual_index < max_index) {
+                    actual_index++;
+                    System.out.println("Redo realizado com sucesso!");
+                }
+                else {
+                    System.out.println("Redo não pôde ser realizado!");
+                }
+            }
+            else if(option == 3){
+                if(actual_index > 0) {
+                    actual_index--;
+                    System.out.println("Undo realizado com sucesso!");
+                }
+                else {
+                    System.out.println("Undo não pôde ser realizado!");
+                }
+            }
+
+            System.out.printf("(1) - Parar\n(2) - Redo\n(3) - Undo\n");
+            option = input.nextInt();
+        }
+
+        copy(undo_redo, employees, actual_index);
+        return actual_index;
+    }
+
+
     public static void payEmployee(String [][] employees, int i, double actual_salary) {
         double total;
         System.out.printf("Sálario atual: %.2f\n", actual_salary);
@@ -54,6 +110,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 if(employees[i][3].equals("1")) {
                     payEmployee(employees, i, actual_salary);
                     employees[i][12] = "7";
+                    employees[i][6] = "0";
                 }
                 else if(employees[i][3].equals("3") && employees[i][5].equals("0")) {
                     payEmployee(employees, i, actual_salary);
@@ -66,10 +123,13 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     else if(month == 4 || month == 6 || month == 9 || month == 11) {
                         employees[i][12] = "30";
                     }
+                    employees[i][6] = employees[i][3];
                 }
                 else if(employees[i][3].equals("3") && !employees[i][5].equals("0")) {
+                    actual_salary += Double.parseDouble(employees[i][3]) / 2.0;
                     payEmployee(employees, i, actual_salary);
                     employees[i][12] = "14";
+                    employees[i][6] = "0";
                 }
 
                 if(employees[i][11].equals("1")) {
@@ -91,7 +151,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
     }
 
     public static void updatePayment(String [][] employees, int i, int day_of_week, int day, int month) {
-        
+
     }
 
 
@@ -545,12 +605,74 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         }
     }
 
+    public static void updateUndoRedo(String [][] employees, String [][][] undo_redo, int max_index) {
+        if(max_index == 1000) {
+            System.out.println("A matriz de undo/redo atingiu o limite! Não pode mais armazenar as matrizes de funcionários");
+        }
+        else {
+            for(int i = 0; i < 50; i++) {
+                undo_redo[max_index][i][0] = employees[i][0];
+                undo_redo[max_index][i][1] = employees[i][1];
+                undo_redo[max_index][i][2] = employees[i][2];
+                undo_redo[max_index][i][3] = employees[i][3];
+                undo_redo[max_index][i][4] = employees[i][4];
+                undo_redo[max_index][i][5] = employees[i][5];
+                undo_redo[max_index][i][6] = employees[i][6];
+                undo_redo[max_index][i][7] = employees[i][7];
+                undo_redo[max_index][i][8] = employees[i][8];
+                undo_redo[max_index][i][9] = employees[i][9];
+                undo_redo[max_index][i][10] = employees[i][10];
+                undo_redo[max_index][i][11] = employees[i][11];
+                undo_redo[max_index][i][12] = employees[i][12];
+            }
+        }
+    }
+
+    public static void initializeMatrix(String [][] employees, String [][][] undo_redo) {
+        for(int i = 0; i < 50; i++) {
+            employees[i][0] = null;
+            employees[i][1] = null;
+            employees[i][2] = null;
+            employees[i][3] = null;
+            employees[i][4] = null;
+            employees[i][5] = null;
+            employees[i][6] = null;
+            employees[i][7] = null;
+            employees[i][8] = null;
+            employees[i][9] = null;
+            employees[i][10] = null;
+            employees[i][11] = null;
+            employees[i][12] = null;
+        }
+
+        for(int j = 0; j < 1000; j++) {
+            for(int k = 0; k < 50; k++) {
+                undo_redo[j][k][0] = null;
+                undo_redo[j][k][1] = null;
+                undo_redo[j][k][2] = null;
+                undo_redo[j][k][3] = null;
+                undo_redo[j][k][4] = null;
+                undo_redo[j][k][5] = null;
+                undo_redo[j][k][6] = null;
+                undo_redo[j][k][7] = null;
+                undo_redo[j][k][8] = null;
+                undo_redo[j][k][9] = null;
+                undo_redo[j][k][10] = null;
+                undo_redo[j][k][11] = null;
+                undo_redo[j][k][12] = null;
+            }
+        }
+    }
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         String [][] employees = new String[50][13];
+        String [][][] undo_redo = new String[1000][50][13];
         int [][] calendary = new int[12][3];
         int option, id = 1, id_syndicate = 1000, current_employees = 0, day = 0, day_of_week = 0, month = 0, year = 0, initial_day;
+        int actual_index = -1, max_index = 0;
+        initializeMatrix(employees, undo_redo);
+        max_index++;
 
         System.out.println("Bem vindo ao sistema de Folha de Pagamento!");
         System.out.printf("Agora vamos configurar o sistema!\n\n");
@@ -571,12 +693,12 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
 
         while(true) {
             System.out.println("Digite uma das opções abaixo para executar o programa:");
-            System.out.printf("\n0 - Parar o programa\n1 - Adicionar um funcionário\n2 - Remover um funcionário\n3 - Lançar um cartão de ponto\n4 - Adicionar venda\n5 - Adicionar uma taxa de serviço\n6 - Alterar dados de um funcionário\n7 - Rodar o sistema de pagamentos\n\n");
+            System.out.printf("\n0 - Parar o programa\n1 - Adicionar um funcionário\n2 - Remover um funcionário\n3 - Lançar um cartão de ponto\n4 - Adicionar venda\n5 - Adicionar uma taxa de serviço\n6 - Alterar dados de um funcionário\n7 - Rodar o sistema de pagamentos\n8 - Undo/Redo\n\n");
             System.out.println("Digite uma das opções:");
             option = input.nextInt();
             System.out.println();
 
-            while(option != 0 && option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6 && option != 7) {
+            while(option != 0 && option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6 && option != 7 && option != 8) {
                 System.out.println("Digite uma opção válida:");
                 option = input.nextInt();
             }
@@ -590,27 +712,39 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 current_employees++;
                 id++;
                 id_syndicate++;
+                updateUndoRedo(employees, undo_redo, max_index);
+                max_index++;
             }
             else if(option == 2) {
                 removeEmployee(employees, current_employees);
                 System.out.println("Funcionário removido com sucesso!");
                 current_employees--;
+                updateUndoRedo(employees, undo_redo, max_index);
+                max_index++;
             }
             else if(option == 3) {
                 addHoursWorked(employees, current_employees);
                 System.out.println("Cartão de ponto adicionado com sucesso!");
+                updateUndoRedo(employees, undo_redo, max_index);
+                max_index++;
             }
             else if(option == 4) {
                 addSale(employees, current_employees);
                 System.out.println("Venda adicionada com sucesso!");
+                updateUndoRedo(employees, undo_redo, max_index);
+                max_index++;
             }
             else if(option == 5) {
                 addServiceTax(employees, current_employees);
                 System.out.println("Serviço adicionado com sucesso!");
+                updateUndoRedo(employees, undo_redo, max_index);
+                max_index++;
             }
             else if(option == 6) {
                 changeData(employees, current_employees, day_of_week, day, month);
                 System.out.println("Dado(s) modificado(s) com sucesso!");
+                updateUndoRedo(employees, undo_redo, max_index);
+                max_index++;
             }
             else if(option == 7) {
                 System.out.println("Rodar a folha de pagamento irá passar o dia!");
@@ -644,6 +778,9 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     month = 1;
                     year++;
                 }
+            }
+            else if(option == 8) {
+                actual_index = undoRedo(undo_redo, employees, actual_index, max_index);
             }
 
             System.out.printf("\n-------------------------------------------------------\n\n");
@@ -698,4 +835,6 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
    day_of_week % 7 = 0 -> Domingo
 
    Obs2: A taxa do sindicato é retirada no último dia útil do mês de todos que fazem parte do sindicato
+
+   Obs3: A quantidade máxima de undo/redo que será realizado nesse programa é 1000 vezes
  */

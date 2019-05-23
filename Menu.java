@@ -32,6 +32,113 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         }
     }
 
+    public static void updateModeOfPayment(String [][] employees, int [] schedule, int i) {
+        if(employees[i][2].equals("1")) {
+            employees[i][13] = "3";
+            employees[i][14] = Integer.toString(schedule[3]);
+        }
+        else if(employees[i][2].equals("2") && !employees[i][5].equals("0")) {
+            employees[i][13] = "2";
+            employees[i][14] = Integer.toString(schedule[2]);
+        }
+        else if(employees[i][2].equals("2") && employees[i][5].equals("0")) {
+            employees[i][13] = "1";
+            employees[i][14] = Integer.toString(schedule[1]);
+        }
+    }
+
+
+    public static void updatePayment(String [][] employees, int [][] calendary, int day_of_week, int day, int month, int i) {
+        int days_to_payment = 0;
+        int day_of_payment = Integer.parseInt(employees[i][14]);
+        if(employees[i][13].equals("3")) {
+            if(day_of_week % 7 == (day_of_payment + 1) % 7) {
+                days_to_payment = 6 + 7;
+            }
+            else if(day_of_week % 7 == day_of_payment) {
+                days_to_payment = 7;
+            }
+            else {
+                days_to_payment = (5 - (day_of_week % 7)) + 7;
+            }
+        }
+        else if(employees[i][13].equals("2")) {
+            if(day_of_week % 7 == (day_of_payment + 1) % 7) {
+                days_to_payment = 6 + 14;
+            }
+            else if(day_of_week % 7 == day_of_payment) {
+                days_to_payment = 14;
+            }
+            else {
+                days_to_payment = (5 - (day_of_week % 7)) + 14;
+            }
+        }
+        else if(employees[i][13].equals("1")) {
+            if(day_of_payment == -1) {
+                days_to_payment = (calendary[month - 1][2] - day) + calendary[month][2];
+            }
+            else {
+                days_to_payment = (calendary[month - 1][2] - day) + day_of_payment;
+            }
+        }
+
+        employees[i][12] = Integer.toString(days_to_payment);
+    }
+
+    public static void createNewSchedule(int [] schedule) {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Digite o dia que será pago mensalmente, podendo escolher até o dia 28, caso deseje que o pagamento seja no último dia útil do mês digite -1:");
+        int aux = input.nextInt();
+        schedule[0] = aux;
+        System.out.println("Digite o dia que será pago bi-semanalmente:");
+        System.out.printf("(1) - Segunda\n(2) - Terça\n(3) - Quarta\n(4) - Quinta\n(5) - Sexta\n(6) - Sábado\n(7) - Domingo\n");
+        aux = input.nextInt();
+        schedule[1] = aux;
+        System.out.println("Digite o dia que será pago semanalmente:");
+        System.out.printf("(1) - Segunda\n(2) - Terça\n(3) - Quarta\n(4) - Quinta\n(5) - Sexta\n(6) - Sábado\n(7) - Domingo\n");
+        aux = input.nextInt();
+        schedule[2] = aux;
+    }
+
+    public static void chooseSchedule(String [][] employees, int [] schedule, int [][] calendary, int current_employees, int day_of_week, int day, int month) {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Digite o id do funcionário ou digite -1 para ver o número de todos os funcionários:");
+        String option = input.nextLine();
+
+
+        if(option.equals("-1")) {
+            listOfEmployees(employees, current_employees);
+
+            System.out.println("Digite o id do funcionário:");
+            option = input.nextLine();
+        }
+
+        for(int i = 0; i < 50; i++){
+            if(employees[i][4].equals(option)) {
+                System.out.printf("Digite a agenda que o funcionário %s irá aderir:", employees[i][0]);
+                System.out.printf("(1) - Mensalmente\n(2) - Bi-Semanalmente\n(3) - Semanalmente\n");
+                option = input.nextLine();
+                employees[i][13] = option;
+                int option_int = Integer.parseInt(option);
+                if(option.equals("1")) {
+                    employees[i][14] = Integer.toString(schedule[option_int]);
+                    updatePayment(employees, calendary, day_of_week, day, month, i);
+                }
+                else if(option.equals("2")) {
+                    employees[i][14] = Integer.toString(schedule[option_int]);
+                    updatePayment(employees, calendary, day_of_week, day, month, i);
+                }
+                else if(option.equals("3")) {
+                    employees[i][14] = Integer.toString(schedule[option_int]);
+                    updatePayment(employees, calendary, day_of_week, day, month, i);
+                }
+
+                break;
+            }
+        }
+    }
+
+
     public static int undoRedo(String [][][] undo_redo, String [][] employees, int actual_index, int max_index) {
         Scanner input = new Scanner(System.in);
         System.out.printf("(1) - Parar\n(2) - Redo\n(3) - Undo\n");
@@ -52,7 +159,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 }
             }
             else if(option == 3){
-                if(actual_index > 0) {
+                if(actual_index > 1) {
                     actual_index--;
                     System.out.println("Undo realizado com sucesso!");
                 }
@@ -150,12 +257,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         }
     }
 
-    public static void updatePayment(String [][] employees, int i, int day_of_week, int day, int month) {
-
-    }
-
-
-    public static void changeData(String [][] employees, int current_employees, int day_of_week, int day, int month) { // talvez tenha que alterar !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public static void changeData(String [][] employees, int current_employees, int day_of_week, int day, int month, int [][] calendary, int [] schedule) { // talvez tenha que alterar !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Scanner input = new Scanner(System.in);
         System.out.println("Digite o id do funcionário ou digite -1 para ver o número de todos os funcionários:");
         String option = input.nextLine();
@@ -189,10 +291,25 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 System.out.println("Digite 1 para modificar o tipo de trabalho e 0 para não modificar");
                 option = input.nextLine();
                 if(option.equals("1")) {
-                    System.out.println("(1) Horista\n(2) Comissionado\n(3) Salariado");
+                    System.out.println("(1) Horista\n(2) Salariado");
                     String type = input.nextLine();
-                    employees[i][2] = type;
-                    updatePayment(employees, i, day_of_week, day, month);
+                    if(!employees[i][2].equals(type)) {
+                        employees[i][2] = type;
+                        updateModeOfPayment(employees, schedule, i);
+                        updatePayment(employees, calendary, day_of_week, day, month, i);
+                    }
+                }
+
+                System.out.println("Digite 1 para modificar a comissão e 0 para não modificar");
+                option = input.nextLine();
+                if(option.equals("1")) {
+                    System.out.println("Digite a comissão do funcionário, caso não exista digite 0:");
+                    String commission = input.nextLine();
+                    if((employees[i][5].equals("0") && !commission.equals("0")) || (!employees[i][5].equals("0") && commission.equals("0"))) {
+                        employees[i][5] = commission;
+                        updateModeOfPayment(employees, schedule, i);
+                        updatePayment(employees, calendary, day_of_week, day, month, i);
+                    }
                 }
 
                 System.out.println("Digite 1 para modificar o salário e 0 para não modificar");
@@ -201,6 +318,10 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     System.out.println("Digite o novo salário:");
                     String salary = input.nextLine();
                     employees[i][3] = salary;
+
+                    if(employees[i][2].equals("2") && employees[i][5].equals("0")) {
+
+                    }
                 }
 
                 System.out.println("Digite 1 para modificar o id e 0 para não modificar");
@@ -216,17 +337,6 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                         }
                     }
                     employees[i][4] = new_id;
-                }
-
-                System.out.println("Digite 1 para modificar a comissão e 0 para não modificar");
-                option = input.nextLine();
-                if(option.equals("1")) {
-                    System.out.println("Digite a comissão do funcionário, caso não exista digite 0:");
-                    String commission = input.nextLine();
-                    if((employees[i][5].equals("0") && !commission.equals("0")) || (!employees[i][5].equals("0") && commission.equals("0"))) {
-                        employees[i][5] = commission;
-                        updatePayment(employees, i, day_of_week, day, month);
-                    }
                 }
 
                 System.out.println("Digite 1 para modificar a quantia do próximo contracheque e 0 para não modificar");
@@ -285,12 +395,12 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 System.out.println("Digite 1 para modificar o metódo de pagamento e 0 para não modificar");
                 option = input.nextLine();
                 if(option.equals("1")) {
-                    System.out.println("(1) Receber o pagamento em cheque pelos correios\n(2) Receber o pagamento em cheque em mãos\n(3) Receber o pagamento na conta bancária:");
+                    System.out.println("(1) Receber o pagamento em cheque pelos correios\n(2) Receber o pagamento em cheque em mãos\n(3) Receber o pagamento na conta bancária");
                     String payment = input.nextLine();
                     employees[i][11] = payment;
                 }
 
-                System.out.println("Digite 1 para alterar a quantidade de dias para o pagamento e 0 para não modificar");
+                System.out.println("Digite 1 para alterar a quantidade de dias para o pagamento e 0 para não modificar"); // retirar !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite a quantidade de dias para o pagamento:");
@@ -459,9 +569,8 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         }
     }
 
-    public static void addEmployee(String [][] employees, int current_employees, int id, int id_syndicate, int day_of_week, int day, int month, int [][] calendary) {
+    public static void addEmployee(String [][] employees, int current_employees, int id, int id_syndicate, int day_of_week, int day, int month, int [][] calendary, int [] schedule) {
         Scanner input = new Scanner(System.in);
-        int days_to_payment = 0;
 
         System.out.println("Digite o nome do funcionário:");
         String name = input.nextLine();
@@ -471,7 +580,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         String address = input.nextLine();
         System.out.println();
 
-        System.out.println("(1) Horista\n(2) Comissionado\n(3) Salariado");
+        System.out.println("(1) Horista\n(2) Assalariado");
         String type = input.nextLine();
         System.out.println();
 
@@ -479,7 +588,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         String salary = input.nextLine();
         System.out.println();
 
-        System.out.println("(1) Receber o pagamento em cheque pelos correios\n(2) Receber o pagamento em cheque em mãos\n(3) Receber o pagamento na conta bancária:");
+        System.out.println("(1) Receber o pagamento em cheque pelos correios\n(2) Receber o pagamento em cheque em mãos\n(3) Receber o pagamento na conta bancária");
         String payment = input.nextLine();
         System.out.println();
 
@@ -510,39 +619,6 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 employees[i][11] = payment;
                 employees[i][12] = "0";
 
-                if(employees[i][3].equals("1")) {
-                    if(day_of_week % 7 == 6) {
-                        days_to_payment = 6 + 7;
-                    }
-                    else if(day_of_week % 7 == 5) {
-                        days_to_payment = 7;
-                    }
-                    else {
-                        days_to_payment = (5 - (day_of_week % 7)) + 7;
-                    }
-                }
-                else if(employees[i][3].equals("3") && employees[i][5].equals("0")) {
-                    if(day == 1) {
-                        days_to_payment = calendary[month - 1][2] - 1;
-                    }
-                    else {
-                        days_to_payment = (calendary[month - 1][2] - day) + calendary[month][2];
-                    }
-                }
-                else if(employees[i][3].equals("3") && !employees[i][5].equals("0")) {
-                    if(day_of_week % 7 == 6) {
-                        days_to_payment = 6 + 14;
-                    }
-                    else if(day_of_week % 7 == 5) {
-                        days_to_payment = 14;
-                    }
-                    else {
-                        days_to_payment = (5 - (day_of_week % 7)) + 14;
-                    }
-                }
-
-                employees[i][12] = Integer.toString(days_to_payment);
-
                 if(employees[i][2].equals("3")) {
                     employees[i][6] = employees[i][3];
                 }
@@ -556,6 +632,8 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     employees[i][9] = tax_syndicate;
                 }
 
+                updateModeOfPayment(employees, schedule, i);
+                updatePayment(employees, calendary, day_of_week, day, month, i);
                 break;
             }
         }
@@ -624,6 +702,8 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 undo_redo[max_index][i][10] = employees[i][10];
                 undo_redo[max_index][i][11] = employees[i][11];
                 undo_redo[max_index][i][12] = employees[i][12];
+                undo_redo[max_index][i][13] = employees[i][13];
+                undo_redo[max_index][i][14] = employees[i][14];
             }
         }
     }
@@ -643,6 +723,8 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
             employees[i][10] = null;
             employees[i][11] = null;
             employees[i][12] = null;
+            employees[i][13] = null;
+            employees[i][14] = null;
         }
 
         for(int j = 0; j < 1000; j++) {
@@ -660,18 +742,39 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 undo_redo[j][k][10] = null;
                 undo_redo[j][k][11] = null;
                 undo_redo[j][k][12] = null;
+                undo_redo[j][k][13] = null;
+                undo_redo[j][k][14] = null;
             }
         }
     }
 
+    public static int updateCurrentEmployee(String [][] employees) {
+        int current_employees = 0;
+        for(int i = 0; i < 50; i++) {
+            if(employees[i][0] == null) {
+                break;
+            }
+            current_employees++;
+        }
+
+        return current_employees;
+    }
+
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        String [][] employees = new String[50][13];
-        String [][][] undo_redo = new String[1000][50][13];
+        String [][] employees = new String[50][15];
+        String [][][] undo_redo = new String[1000][50][15];
+        int [] schedule = new int[3];
         int [][] calendary = new int[12][3];
         int option, id = 1, id_syndicate = 1000, current_employees = 0, day = 0, day_of_week = 0, month = 0, year = 0, initial_day;
         int actual_index = -1, max_index = 0;
         initializeMatrix(employees, undo_redo);
+        // inicialização da agenda de pagamento:
+        schedule[0] = -1; // último dia útil do mês
+        schedule[1] = 5; // bi-semanalmente pago toda sexta
+        schedule[2] = 5; // semanalmente pago toda sexta
+        // -----------------------------------------------
         max_index++;
 
         System.out.println("Bem vindo ao sistema de Folha de Pagamento!");
@@ -698,7 +801,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
             option = input.nextInt();
             System.out.println();
 
-            while(option != 0 && option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6 && option != 7 && option != 8) {
+            while(option != 0 && option != 1 && option != 2 && option != 3 && option != 4 && option != 5 && option != 6 && option != 7 && option != 8 && option != 9 && option != 10) {
                 System.out.println("Digite uma opção válida:");
                 option = input.nextInt();
             }
@@ -707,7 +810,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 break;
             }
             else if(option == 1) {
-                addEmployee(employees, current_employees, id, id_syndicate, day_of_week, day, month, calendary);
+                addEmployee(employees, current_employees, id, id_syndicate, day_of_week, day, month, calendary, schedule);
                 System.out.println("Funcionário adicionado com sucesso!");
                 current_employees++;
                 id++;
@@ -741,7 +844,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 max_index++;
             }
             else if(option == 6) {
-                changeData(employees, current_employees, day_of_week, day, month);
+                changeData(employees, current_employees, day_of_week, day, month, calendary, schedule);
                 System.out.println("Dado(s) modificado(s) com sucesso!");
                 updateUndoRedo(employees, undo_redo, max_index);
                 max_index++;
@@ -782,8 +885,16 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
             else if(option == 8) {
                 actual_index = undoRedo(undo_redo, employees, actual_index, max_index);
             }
+            else if(option == 9) {
+                System.out.println("Escolher uma nova agenda irá reiniciar os dias restantes para o próximo pagamento do funcionário");
+                chooseSchedule(employees, schedule, calendary, current_employees, day_of_week, day, month);
+            }
+            else if(option == 10) {
+                createNewSchedule(schedule);
+            }
 
             System.out.printf("\n-------------------------------------------------------\n\n");
+             current_employees = updateCurrentEmployee(employees);
         }
 
         for(int i = 0; i < current_employees; i++) {
@@ -819,11 +930,18 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
    10 -> taxa do servico
    11 -> metodo de pagamento
    12 -> dias para o pagamento
+   13 -> modo de pagamento(mensalmente, bi-semanalmente, semanalmente)
+   14 -> dia que é pago(do mês ou da semana)
 
    MATRIZ calendary(colunas):
    0 -> dia inicial do mês (segunda, terça...)
    1 -> último dia útil do mês (28, 29...)
    2 -> quantidade de dias do mês
+
+   ARRAY schedule(colunas):
+   0 -> Dia pago mensalmente(1, 2, 3, 17, 18...)
+   1 -> Dia pago bi-semanalmente(1(segunda), 2(terça), 3(quarta)...)
+   2 -> Dia pago semanalmente(1(segunda), 2(terça), 3(quarta)...)
 
    Obs: Em relação ao dia, temos:
    day_of_week % 7 = 1 -> Segunda

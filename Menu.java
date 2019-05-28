@@ -261,6 +261,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         Scanner input = new Scanner(System.in);
         System.out.println("Digite o id do funcionário ou digite -1 para ver o número de todos os funcionários:");
         String option = input.nextLine();
+        int aux = 0; // verifica se ocorreu alguma mudança no tipo de trabalho, se foi adicionada alguma comissão ou se o salário foi alterado
 
 
         if(option.equals("-1")) {
@@ -297,6 +298,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                         employees[i][2] = type;
                         updateModeOfPayment(employees, schedule, i);
                         updatePayment(employees, calendary, day_of_week, day, month, i);
+                        aux = 1;
                     }
                 }
 
@@ -309,6 +311,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                         employees[i][5] = commission;
                         updateModeOfPayment(employees, schedule, i);
                         updatePayment(employees, calendary, day_of_week, day, month, i);
+                        aux = 1;
                     }
                 }
 
@@ -318,9 +321,15 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     System.out.println("Digite o novo salário:");
                     String salary = input.nextLine();
                     employees[i][3] = salary;
+                    aux = 1;
+                }
 
-                    if(employees[i][2].equals("2") && employees[i][5].equals("0")) {
-
+                if(aux == 1) { // próximo contracheque deverá ser reiniciado
+                    if((employees[i][2].equals("1") || (employees[i][2].equals("2") && !employees[i][5].equals("0")))) {
+                       employees[i][6] = "0";
+                    }
+                    else if(employees[i][2].equals("2") && employees[i][5].equals("0")){
+                        employees[i][6] = employees[i][3];
                     }
                 }
 

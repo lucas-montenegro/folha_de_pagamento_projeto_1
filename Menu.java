@@ -997,5 +997,5 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
 
    Obs2: A taxa do sindicato é retirada no último dia útil do mês de todos que fazem parte do sindicato
 
-   Obs3: A quantidade máxima de undo/redo que será realizado nesse programa é 1000 vezes
+   Obs3: O usuário poderá fazer no máximo 1 undo e 1 redo
  */

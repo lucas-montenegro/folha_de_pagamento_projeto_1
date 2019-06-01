@@ -1,12 +1,12 @@
 import java.util.Scanner;
 
-public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIONADOS E VERIFICAR SE PAYROLL ESTÁ CORRETO
+public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIONADOS E VERIFICAR SE PAYROLL ESTÁ CORRETO E ALTERAR A FOMRA COMO O SINDICATO COBRA
     public static void listOfEmployees(String [][] employees, int current_employees) {
         for(int i = 0; i < current_employees; i++) {
             System.out.printf("Nome: %s\n", employees[i][0]);
             System.out.printf("Id do funcionário: %s\n", employees[i][4]);
-            if(employees[i][7].equals("0")) {
-                System.out.printf("%s não pertence ao sindicato!\n", employees[i][0]);
+            if(!employees[i][7].equals("1")) {
+                System.out.printf("%s não pertence ao sindicato!\n\n", employees[i][0]);
             }
             else {
                 System.out.printf("Id do sindicato do funcionário: %s\n\n", employees[i][8]);
@@ -29,21 +29,23 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
             employees[i][10] = undo_redo[actual_index][i][10];
             employees[i][11] = undo_redo[actual_index][i][11];
             employees[i][12] = undo_redo[actual_index][i][12];
+            employees[i][13] = undo_redo[actual_index][i][13];
+            employees[i][14] = undo_redo[actual_index][i][14];
         }
     }
 
     public static void updateModeOfPayment(String [][] employees, int [] schedule, int i) {
         if(employees[i][2].equals("1")) {
             employees[i][13] = "3";
-            employees[i][14] = Integer.toString(schedule[3]);
+            employees[i][14] = Integer.toString(schedule[2]);
         }
         else if(employees[i][2].equals("2") && !employees[i][5].equals("0")) {
             employees[i][13] = "2";
-            employees[i][14] = Integer.toString(schedule[2]);
+            employees[i][14] = Integer.toString(schedule[1]);
         }
         else if(employees[i][2].equals("2") && employees[i][5].equals("0")) {
             employees[i][13] = "1";
-            employees[i][14] = Integer.toString(schedule[1]);
+            employees[i][14] = Integer.toString(schedule[0]);
         }
     }
 
@@ -138,45 +140,34 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         }
     }
 
-
-    public static int undoRedo(String [][][] undo_redo, String [][] employees) {
+    public static int undoRedo(String [][][] undo_redo, String [][] employees, int actual_index) {
         Scanner input = new Scanner(System.in);
-        System.out.printf("(1) - Parar\n(2) - Redo\n(3) - Undo\n");
+        System.out.printf("(1) - Undo\n(2) - Redo\n");
         int option = input.nextInt();
 
-        if(undo_redo[1][0][0] != null) {
-            int actual_index = 1;
-            while(option != 1) {
-                if(option == 2) {
-                    if(actual_index < 1) {
-                        actual_index++;
-                        System.out.println("Redo realizado com sucesso!");
-                    }
-                    else {
-                        System.out.println("Redo não pôde ser realizado!");
-                    }
-                }
-                else if(option == 3){
-                    if(actual_index > 0) {
-                        actual_index--;
-                        System.out.println("Undo realizado com sucesso!");
-                    }
-                    else {
-                        System.out.println("Undo não pôde ser realizado!");
-                    }
-                }
-
-                System.out.printf("(1) - Parar\n(2) - Redo\n(3) - Undo\n");
-                option = input.nextInt();
+        if (option == 1) {
+            if (actual_index > 0) {
+                actual_index--;
+                System.out.println("Undo realizado com sucesso!");
+            } else {
+                System.out.println("Undo não pôde ser realizado!");
             }
-            copy(undo_redo, employees, actual_index);
-            return actual_index;
+        } else if (option == 2) {
+            if (actual_index < 1) {
+                actual_index++;
+                System.out.println("Redo realizado com sucesso!");
+            } else {
+                System.out.println("Redo não pôde ser realizado!");
+            }
         }
         else {
             System.out.println("Undo/Redo não podem ser realizados");
             return -1;
         }
+        copy(undo_redo, employees, actual_index);
+        return actual_index;
     }
+
 
 
     public static void payEmployee(String [][] employees, int i, double actual_salary) {
@@ -197,7 +188,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
     }
 
 
-    public static void payroll(String [][] employees, int current_employees, int day, int month) { // adicionar um metodo de tirar a taxa do sindicato em um dia do mes para todo mundo
+    public static void payroll(String [][] employees, int [][] calendary, int current_employees, int day_of_week, int day, int month) { // adicionar um metodo de tirar a taxa do sindicato em um dia do mes para todo mundo
         for(int i = 0; i < current_employees; i++) {
             double actual_salary = Double.parseDouble(employees[i][6]);
             double taxes = 0;
@@ -215,47 +206,32 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
             }
 
             if(employees[i][12].equals("0")) {
-                System.out.printf("Nome: %s | ID : %s\n\n", employees[i][0], employees[i][4]);
-                if(employees[i][3].equals("1")) {
-                    payEmployee(employees, i, actual_salary);
-                    employees[i][12] = "7";
-                    employees[i][6] = "0";
-                }
-                else if(employees[i][3].equals("3") && employees[i][5].equals("0")) {
-                    payEmployee(employees, i, actual_salary);
-                    if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
-                        employees[i][12] = "31";
-                    }
-                    else if(month == 2) {
-                        employees[i][12] = "28";
-                    }
-                    else if(month == 4 || month == 6 || month == 9 || month == 11) {
-                        employees[i][12] = "30";
-                    }
-                    employees[i][6] = employees[i][3];
-                }
-                else if(employees[i][3].equals("3") && !employees[i][5].equals("0")) {
+                System.out.printf("Nome: %s | ID : %s\n", employees[i][0], employees[i][4]);
+                if(employees[i][2].equals("2") && !employees[i][5].equals("0")) {
                     actual_salary += Double.parseDouble(employees[i][3]) / 2.0;
                     payEmployee(employees, i, actual_salary);
-                    employees[i][12] = "14";
-                    employees[i][6] = "0";
                 }
+                else {
+                    payEmployee(employees, i, actual_salary);
+                }
+                updatePayment(employees, calendary, day_of_week, day, month, i);
+                employees[i][6] = "0";
 
                 if(employees[i][11].equals("1")) {
-                    System.out.printf("Recebeu o pagamento através de um cheque para %s\n", employees[i][1]);
+                    System.out.printf("Recebeu o pagamento através de um cheque para %s\n\n", employees[i][1]);
                 }
                 else if(employees[i][11].equals("2")) {
-                    System.out.println("Recebeu o pagamento através de um cheque em mãos");
+                    System.out.println("Recebeu o pagamento através de um cheque em mãos\n\n");
                 }
                 else if(employees[i][11].equals("3")) {
-                    System.out.println("Recebeu o pagamento através de um depósito na conta bancária");
+                    System.out.println("Recebeu o pagamento através de um depósito na conta bancária\n\n");
                 }
             }
             else {
-                days_to_payment = Integer.parseInt(employees[i][12]) - 1;
-                employees[i][12] = Integer.toString(days_to_payment);
                 System.out.printf("O funcionário %s não recebeu nenhum pagamento hoje\n", employees[i][0]);
             }
+            days_to_payment = Integer.parseInt(employees[i][12]) - 1;
+            employees[i][12] = Integer.toString(days_to_payment);
         }
     }
 
@@ -519,7 +495,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 }
 
                 if(employees[i][2].equals("1")) {
-                    double actual_salary = Double.parseDouble(employees[i][7]);
+                    double actual_salary = Double.parseDouble(employees[i][6]);
                     double salary = Double.parseDouble(employees[i][3]);
 
                     if(total_hours > 8) {
@@ -538,24 +514,41 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
     }
 
     public static void remove(String [][] employees, int position, int current_employees) {
-        if(position == 0 && current_employees == 1) {
-            return;
+        if(position == 49) {
+            employees[position][0] = null;
+            employees[position][1] = null;
+            employees[position][2] = null;
+            employees[position][3] = null;
+            employees[position][4] = null;
+            employees[position][5] = null;
+            employees[position][6] = null;
+            employees[position][7] = null;
+            employees[position][8] = null;
+            employees[position][9] = null;
+            employees[position][10] = null;
+            employees[position][11] = null;
+            employees[position][12] = null;
+            employees[position][13] = null;
+            employees[position][14] = null;
         }
-
-        for(int i = position; i < current_employees; i++) {
-            employees[i][0] = employees[i + 1][0];
-            employees[i][1] = employees[i + 1][1];
-            employees[i][2] = employees[i + 1][2];
-            employees[i][3] = employees[i + 1][3];
-            employees[i][4] = employees[i + 1][4];
-            employees[i][5] = employees[i + 1][5];
-            employees[i][6] = employees[i + 1][6];
-            employees[i][7] = employees[i + 1][7];
-            employees[i][8] = employees[i + 1][8];
-            employees[i][9] = employees[i + 1][9];
-            employees[i][10] = employees[i + 1][10];
-            employees[i][11] = employees[i + 1][11];
-            employees[i][12] = employees[i + 1][12];
+        else {
+            for(int i = position; i < current_employees; i++) {
+                employees[i][0] = employees[i + 1][0];
+                employees[i][1] = employees[i + 1][1];
+                employees[i][2] = employees[i + 1][2];
+                employees[i][3] = employees[i + 1][3];
+                employees[i][4] = employees[i + 1][4];
+                employees[i][5] = employees[i + 1][5];
+                employees[i][6] = employees[i + 1][6];
+                employees[i][7] = employees[i + 1][7];
+                employees[i][8] = employees[i + 1][8];
+                employees[i][9] = employees[i + 1][9];
+                employees[i][10] = employees[i + 1][10];
+                employees[i][11] = employees[i + 1][11];
+                employees[i][12] = employees[i + 1][12];
+                employees[i][13] = employees[i + 1][13];
+                employees[i][14] = employees[i + 1][14];
+            }
         }
     }
 
@@ -694,23 +687,25 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         }
     }
 
-    public static void updateUndoRedo(String [][] employees, String [][][] undo_redo) {
-        for(int i = 0; i < 50; i++) {
-            undo_redo[0][i][0] = undo_redo[1][i][0];
-            undo_redo[0][i][1] = undo_redo[1][i][1];
-            undo_redo[0][i][2] = undo_redo[1][i][2];
-            undo_redo[0][i][3] = undo_redo[1][i][3];
-            undo_redo[0][i][4] = undo_redo[1][i][4];
-            undo_redo[0][i][5] = undo_redo[1][i][5];
-            undo_redo[0][i][6] = undo_redo[1][i][6];
-            undo_redo[0][i][7] = undo_redo[1][i][7];
-            undo_redo[0][i][8] = undo_redo[1][i][8];
-            undo_redo[0][i][9] = undo_redo[1][i][9];
-            undo_redo[0][i][10] = undo_redo[1][i][10];
-            undo_redo[0][i][11] = undo_redo[1][i][11];
-            undo_redo[0][i][12] = undo_redo[1][i][12];
-            undo_redo[0][i][13] = undo_redo[1][i][13];
-            undo_redo[0][i][14] = undo_redo[1][i][14];
+    public static void updateUndoRedo(String [][] employees, String [][][] undo_redo, int actual_index) {
+        if(actual_index == 1) {
+            for (int i = 0; i < 50; i++) {
+                undo_redo[0][i][0] = undo_redo[1][i][0];
+                undo_redo[0][i][1] = undo_redo[1][i][1];
+                undo_redo[0][i][2] = undo_redo[1][i][2];
+                undo_redo[0][i][3] = undo_redo[1][i][3];
+                undo_redo[0][i][4] = undo_redo[1][i][4];
+                undo_redo[0][i][5] = undo_redo[1][i][5];
+                undo_redo[0][i][6] = undo_redo[1][i][6];
+                undo_redo[0][i][7] = undo_redo[1][i][7];
+                undo_redo[0][i][8] = undo_redo[1][i][8];
+                undo_redo[0][i][9] = undo_redo[1][i][9];
+                undo_redo[0][i][10] = undo_redo[1][i][10];
+                undo_redo[0][i][11] = undo_redo[1][i][11];
+                undo_redo[0][i][12] = undo_redo[1][i][12];
+                undo_redo[0][i][13] = undo_redo[1][i][13];
+                undo_redo[0][i][14] = undo_redo[1][i][14];
+            }
         }
         for(int i = 0; i < 50; i++) {
             undo_redo[1][i][0] = employees[i][0];
@@ -791,7 +786,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         int [] schedule = new int[3];
         int [][] calendary = new int[12][3];
         int option, id = 1, id_syndicate = 1000, current_employees = 0, day = 0, day_of_week = 0, month = 0, year = 0, initial_day;
-        int last_action = 0;
+        int last_action = 0, actual_index = 1;
         initializeMatrix(employees, undo_redo);
         // inicialização da agenda de pagamento:
         schedule[0] = -1; // último dia útil do mês
@@ -818,7 +813,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
 
         while(true) {
             System.out.println("Digite uma das opções abaixo para executar o programa:");
-            System.out.printf("\n0 - Parar o programa\n1 - Adicionar um funcionário\n2 - Remover um funcionário\n3 - Lançar um cartão de ponto\n4 - Adicionar venda\n5 - Adicionar uma taxa de serviço\n6 - Alterar dados de um funcionário\n7 - Rodar o sistema de pagamentos\n8 - Undo/Redo\n\n");
+            System.out.printf("\n0 - Parar o programa\n1 - Adicionar um funcionário\n2 - Remover um funcionário\n3 - Lançar um cartão de ponto\n4 - Adicionar venda\n5 - Adicionar uma taxa de serviço\n6 - Alterar dados de um funcionário\n7 - Rodar o sistema de pagamentos\n8 - Undo/Redo\n9 - Modificar agenda de pagamento\n10 - Adicionar uma nova agenda de pagamento\n");
             System.out.println("Digite uma das opções:");
             option = input.nextInt();
             System.out.println();
@@ -837,42 +832,48 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                 System.out.println("Funcionário adicionado com sucesso!");
                 id++;
                 id_syndicate++;
-                updateUndoRedo(employees, undo_redo);
+                updateUndoRedo(employees, undo_redo, actual_index);
+                actual_index = 1;
             }
             else if(option == 2) {
                 last_action = 2;
                 removeEmployee(employees, current_employees);
                 System.out.println("Funcionário removido com sucesso!");
-                updateUndoRedo(employees, undo_redo);
+                updateUndoRedo(employees, undo_redo, actual_index);
+                actual_index = 1;
             }
             else if(option == 3) {
                 last_action = 3;
                 addHoursWorked(employees, current_employees);
                 System.out.println("Cartão de ponto adicionado com sucesso!");
-                updateUndoRedo(employees, undo_redo);
+                updateUndoRedo(employees, undo_redo, actual_index);
+                actual_index = 1;
             }
             else if(option == 4) {
                 last_action = 4;
                 addSale(employees, current_employees);
                 System.out.println("Venda adicionada com sucesso!");
-                updateUndoRedo(employees, undo_redo);
+                updateUndoRedo(employees, undo_redo, actual_index);
+                actual_index = 1;
             }
             else if(option == 5) {
                 last_action = 5;
                 addServiceTax(employees, current_employees);
                 System.out.println("Serviço adicionado com sucesso!");
-                updateUndoRedo(employees, undo_redo);
+                updateUndoRedo(employees, undo_redo, actual_index);
+                actual_index = 1;
             }
             else if(option == 6) {
                 last_action = 6;
                 changeData(employees, current_employees, day_of_week, day, month, calendary, schedule);
                 System.out.println("Dado(s) modificado(s) com sucesso!");
-                updateUndoRedo(employees, undo_redo);
+                updateUndoRedo(employees, undo_redo, actual_index);
+                actual_index = 1;
             }
             else if(option == 7) {
                 last_action = 7;
                 System.out.println("Rodar a folha de pagamento irá passar o dia!");
-                payroll(employees, current_employees, day, month);
+                payroll(employees, calendary, current_employees, day_of_week, day, month);
                 System.out.printf("Folha de pagamento realizada na data %d/%d/%d !\n", day, month, year);
                 day++;
                 day_of_week++;
@@ -902,34 +903,74 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     month = 1;
                     year++;
                 }
+                updateUndoRedo(employees, undo_redo, actual_index);
+                actual_index = 1;
             }
             else if(option == 8) {
                 if(last_action != 0) {
-                    if (undoRedo(undo_redo, employees) == 0) {
-                        updateUndoRedo(employees, undo_redo);
-                        if (last_action == 7) {
-                            day--;
-                            day_of_week--;
-                            if(day == 0) {
-                                month--;
-                                if(month == 0) {
-                                    day = calendary[11][2];
-                                    year--;
-                                    month = 12;
-                                    calculateCalendary(calendary, Math.abs(day_of_week - 364));
+                    if(actual_index == 0) {
+                        actual_index = undoRedo(undo_redo, employees, actual_index);
+                        if(actual_index == 1) {
+                            if(last_action == 7) {
+                                day++;
+                                day_of_week++;
+
+                                if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+                                    if(day == 32) {
+                                        day = 1;
+                                        month++;
+                                    }
                                 }
-                                else {
-                                    day = calendary[month - 1][2];
+                                else if (month == 2) {
+                                    if(day == 29) {
+                                        day = 1;
+                                        month++;
+                                    }
+                                }
+                                else if (month == 4 || month == 6 || month == 9 || month == 11) {
+                                    if(day == 31) {
+                                        day = 1;
+                                        month++;
+                                    }
+                                }
+
+                                if(month == 13) {
+                                    calculateCalendary(calendary, day_of_week);
+                                    day = 1;
+                                    month = 1;
+                                    year++;
                                 }
                             }
                         }
                     }
-                    last_action = 8;
+                    else if(actual_index == 1) {
+                        actual_index = undoRedo(undo_redo, employees, actual_index);
+                        if(actual_index == 0) {
+                            if (last_action == 7) {
+                                day--;
+                                day_of_week--;
+                                if (day == 0) {
+                                    month--;
+                                    if (month == 0) {
+                                        day = calendary[11][2];
+                                        year--;
+                                        month = 12;
+                                        calculateCalendary(calendary, Math.abs(day_of_week - 364));
+                                    } else {
+                                        day = calendary[month - 1][2];
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             else if(option == 9) {
                 System.out.println("Escolher uma nova agenda irá reiniciar os dias restantes para o próximo pagamento do funcionário");
                 chooseSchedule(employees, schedule, calendary, current_employees, day_of_week, day, month);
+                updateUndoRedo(employees, undo_redo, actual_index);
+                actual_index = 1;
+                last_action = 9;
             }
             else if(option == 10) {
                 createNewSchedule(schedule);

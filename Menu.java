@@ -1,6 +1,28 @@
 import java.util.Scanner;
 
 public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIONADOS E VERIFICAR SE PAYROLL ESTÁ CORRETO E ALTERAR A FOMRA COMO O SINDICATO COBRA
+    public static void printar_dados(String [][] employees, int i) {
+        System.out.printf("Nome: %s\n", employees[i][0]);
+        System.out.printf("Endereço: %s\n", employees[i][1]);
+        System.out.printf("Tipo: %s\n", employees[i][2]);
+        System.out.printf("Salário: %s\n", employees[i][3]);
+        System.out.printf("Id do funcionário: %s\n", employees[i][4]);
+        System.out.printf("Comissão: %s\n", employees[i][5]);
+        System.out.printf("Salário atual: %s\n", employees[i][6]);
+        if (!employees[i][7].equals("1")) {
+            System.out.printf("Não pertence ao sindicato! ID falho: %s\n", employees[i][8]);
+        } else {
+            System.out.printf("Id do sindicato do funcionário: %s\n", employees[i][8]);
+        }
+        System.out.printf("Taxa do sindicato: %s\n", employees[i][9]);
+        System.out.printf("Taxa de serviço: %s\n", employees[i][10]);
+        System.out.printf("Método de pagamento: %s\n", employees[i][11]);
+        System.out.printf("Dias para o pagamento: %s\n", employees[i][12]);
+        System.out.printf("Tipo de agenda: %s\n", employees[i][13]);
+        System.out.printf("Dia de pagamento da agenda: %s\n", employees[i][14]);
+        System.out.println();
+    }
+
     public static void listOfEmployees(String [][] employees, int current_employees) {
         for(int i = 0; i < current_employees; i++) {
             System.out.printf("Nome: %s\n", employees[i][0]);
@@ -250,7 +272,8 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         }
 
         for(int i = 0; i < 50; i++) {
-            if(employees[i][4].equals("option")) {
+            if(employees[i][4].equals(option)) {
+                printar_dados(employees, i);
                 System.out.println("Digite 1 para modificar o nome e 0 para não modificar");
                 option = input.nextLine();
                 if(option.equals("1")) {
@@ -259,7 +282,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     employees[i][0] = name;
                 }
 
-                System.out.println("Digite 1 para modificar o endereço e 0 para não modificar");
+                System.out.println("Digite 1 para modificar o endereço e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite o endereço:");
@@ -267,7 +290,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     employees[i][1] = address;
                 }
 
-                System.out.println("Digite 1 para modificar o tipo de trabalho e 0 para não modificar");
+                System.out.println("Digite 1 para modificar o tipo de trabalho e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("(1) Horista\n(2) Salariado");
@@ -280,7 +303,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     }
                 }
 
-                System.out.println("Digite 1 para modificar a comissão e 0 para não modificar");
+                System.out.println("Digite 1 para modificar a comissão e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite a comissão do funcionário, caso não exista digite 0:");
@@ -293,7 +316,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     }
                 }
 
-                System.out.println("Digite 1 para modificar o salário e 0 para não modificar");
+                System.out.println("Digite 1 para modificar o salário e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite o novo salário:");
@@ -311,16 +334,16 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     }
                 }
 
-                System.out.println("Digite 1 para modificar o id e 0 para não modificar");
+                System.out.println("Digite 1 para modificar o id e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite o novo id(número natural válido):");
                     String new_id = input.nextLine();
                     for(int j = 0; j < 50; j++) {
                         if(employees[j][4].equals(new_id) && j != i) {
-                            System.out.println("Digite um id válido(digite um id inexistente):");
+                            System.out.println("Digite um id válido:");
                             new_id = input.nextLine();
-                            i = 0;
+                            j = 0;
                         }
                     }
                     employees[i][4] = new_id;
@@ -334,7 +357,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     employees[i][6] = atual_salary;
                 }
 
-                System.out.println("Digite 1 para modificar a participação no sindicato e 0 para não modificar");
+                System.out.println("Digite 1 para modificar a participação no sindicato e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite 1 para participar e 0 para não participar:");
@@ -348,7 +371,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     }
                 }
 
-                System.out.println("Digite 1 para modificar a identificação no sindicato e 0 para não modificar");
+                System.out.println("Digite 1 para modificar a identificação no sindicato e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite a identificação do sindicato(número natural válido):");
@@ -363,7 +386,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     employees[i][8] = id_syndicate;
                 }
 
-                System.out.println("Digite 1 para modificar a taxa do sindicato e 0 para não modificar");
+                System.out.println("Digite 1 para modificar a taxa do sindicato e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite a taxa do sindicato:");
@@ -371,7 +394,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     employees[i][9] = tax_syndicate;
                 }
 
-                System.out.println("Digite 1 para modificar a taxa de serviço do sindicato e 0 para não modificar");
+                System.out.println("Digite 1 para modificar a taxa de serviço do sindicato e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("Digite a taxa de serviço do sindicato:");
@@ -379,7 +402,7 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     employees[i][10] = tax_service;
                 }
 
-                System.out.println("Digite 1 para modificar o metódo de pagamento e 0 para não modificar");
+                System.out.println("Digite 1 para modificar o metódo de pagamento e 0 para não modificar:");
                 option = input.nextLine();
                 if(option.equals("1")) {
                     System.out.println("(1) Receber o pagamento em cheque pelos correios\n(2) Receber o pagamento em cheque em mãos\n(3) Receber o pagamento na conta bancária");
@@ -387,13 +410,8 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
                     employees[i][11] = payment;
                 }
 
-                System.out.println("Digite 1 para alterar a quantidade de dias para o pagamento e 0 para não modificar"); // retirar !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                option = input.nextLine();
-                if(option.equals("1")) {
-                    System.out.println("Digite a quantidade de dias para o pagamento:");
-                    String days_to_payment = input.nextLine();
-                    employees[i][12] = days_to_payment;
-                }
+                System.out.println("Alterações completas!");
+                printar_dados(employees, i);
             }
         }
     }
@@ -440,11 +458,9 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
             if(employees[i][4].equals(option)) {
                 System.out.printf("Digite o valor da venda que o funcionário %s, com o id %s, realizou hoje:\n", employees[i][0], employees[i][4]);
                 String sale = input.nextLine();
-                System.out.println("Digite a data da venda(dia/mês/ano):");
-                String date = input.nextLine();
                 double sale_double = Double.parseDouble(sale);
-                double actual_salary = Double.parseDouble(employees[i][7]);
-                double commission = Double.parseDouble(employees[i][6]);
+                double actual_salary = Double.parseDouble(employees[i][6]);
+                double commission = Double.parseDouble(employees[i][5]);
                 double total = actual_salary + ((commission * sale_double) / 100);
                 String total_string = Double.toString(total);
                 employees[i][6] = total_string;

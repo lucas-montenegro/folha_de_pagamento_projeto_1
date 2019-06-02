@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIONADOS E VERIFICAR SE PAYROLL ESTÁ CORRETO E ALTERAR A FOMRA COMO O SINDICATO COBRA
+public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
     public static void printar_dados(String [][] employees, int i) {
         System.out.printf("Nome: %s\n", employees[i][0]);
         System.out.printf("Endereço: %s\n", employees[i][1]);
@@ -75,26 +75,27 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
     public static void updatePayment(String [][] employees, int [][] calendary, int day_of_week, int day, int month, int i) {
         int days_to_payment = 0;
         int day_of_payment = Integer.parseInt(employees[i][14]);
+        System.out.printf("%d %d\n", day_of_payment, day_of_week);
         if(employees[i][13].equals("3")) {
-            if(day_of_week % 7 == (day_of_payment + 1) % 7) {
-                days_to_payment = 6 + 7;
-            }
-            else if(day_of_week % 7 == day_of_payment) {
+            if(day_of_week % 7 == day_of_payment % 7) {
                 days_to_payment = 7;
             }
-            else {
-                days_to_payment = (5 - (day_of_week % 7)) + 7;
+            else if((day_of_week % 7) > (day_of_payment % 7)) {
+                days_to_payment =  (day_of_payment - (day_of_week % 7)) + 14;
+            }
+            else if((day_of_week % 7) < (day_of_payment % 7)){
+                days_to_payment = (day_of_payment - (day_of_week % 7)) + 7;
             }
         }
         else if(employees[i][13].equals("2")) {
-            if(day_of_week % 7 == (day_of_payment + 1) % 7) {
-                days_to_payment = 6 + 14;
-            }
-            else if(day_of_week % 7 == day_of_payment) {
+            if(day_of_week % 7 == day_of_payment % 7) {
                 days_to_payment = 14;
             }
-            else {
-                days_to_payment = (5 - (day_of_week % 7)) + 14;
+            else if((day_of_week % 7) > (day_of_payment % 7)) {
+                days_to_payment =  (day_of_payment - (day_of_week % 7)) + 21;
+            }
+            else if((day_of_week % 7) < (day_of_payment % 7)){
+                days_to_payment = (day_of_payment - (day_of_week % 7)) + 14;
             }
         }
         else if(employees[i][13].equals("1")) {
@@ -152,11 +153,11 @@ public class Menu { // TALVEZ MODIFICAR OS TIPOS DE TRABALHO E TIRAR OS COMISSIO
         for(int i = 0; i < 50; i++){
             if(employees[i][4] != null) {
                 if (employees[i][4].equals(option)) {
-                    System.out.printf("Digite a agenda que o funcionário %s irá aderir:", employees[i][0]);
+                    System.out.printf("Digite a agenda que o funcionário %s irá aderir:\n", employees[i][0]);
                     System.out.printf("(1) - Mensalmente\n(2) - Bi-Semanalmente\n(3) - Semanalmente\n");
                     option = input.nextLine();
                     employees[i][13] = option;
-                    int option_int = Integer.parseInt(option);
+                    int option_int = Integer.parseInt(option) - 1;
                     if (option.equals("1")) {
                         employees[i][14] = Integer.toString(schedule[option_int]);
                         updatePayment(employees, calendary, day_of_week, day, month, i);

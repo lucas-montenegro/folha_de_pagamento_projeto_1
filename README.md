@@ -1,6 +1,6 @@
 <h1><b>Explicações do funcionamento e regras sobre a folha de pagamentos:</b></h1>
   <h3>Regras:</h3>
-    -Você deverá iniciar o sistema especificando o primeiro dia do ano (segunda, terça, quarta...) e inserindo a data atual como é pedido;
+    -Você deverá iniciar o sistema especificando o primeiro dia do ano (segunda, terça, quarta...) e inserindo a data atual como é pedido;<br>
     -Você deverá sempre inserir os dados da forma como o programa pede;
     -Se o programa requisitar algum número decimal, ele deve ser digitado com o ponto (.) e com no máximo duas casas decimais, por exemplo o número 3.12;
     -Caso o usuário deseje realizar alguma operação com algum funcionário, ele deverá ter pelo menos 1 funcionário registrado para realizar tal ação;

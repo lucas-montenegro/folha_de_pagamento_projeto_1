@@ -207,13 +207,10 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         }
     }
 
-    public static int undoRedo(String[][][] undo_redo, String[][] employees, int actual_index, int undo_redo_size) {
+    public static int undoRedo(String[][][] undo_redo, String[][] employees, int actual_index, int actual_size) {
         Scanner input = new Scanner(System.in);
         System.out.printf("(1) - Undo\n(2) - Redo\n(3) - Sair\n");
         int option = input.nextInt();
-        if (undo_redo_size > 49) {
-            undo_redo_size = 50;
-        }
 
         while (option != 3) {
             if (option == 1) {
@@ -224,7 +221,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                     System.out.println("Undo não pôde ser realizado!");
                 }
             } else if (option == 2) {
-                if (actual_index < undo_redo_size - 1) {
+                if (actual_index < actual_size) {
                     actual_index++;
                     System.out.println("Redo realizado com sucesso!");
                 } else {
@@ -770,57 +767,10 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         }
     }
 
-    public static int updateUndoRedo(String[][] employees, String[][][] undo_redo, int[][] date, int actual_index, int undo_redo_size, int initial_day, int day_of_week, int day, int month, int year) {
-        System.out.printf("%d | %d\n\n", actual_index, undo_redo_size);
-        if (actual_index != undo_redo_size - 1) {
-            date[actual_index][0] = initial_day % 7;
-            date[actual_index][1] = day_of_week % 7;
-            date[actual_index][2] = day;
-            date[actual_index][3] = month;
-            date[actual_index][4] = year;
-            for (int i = 0; i < 50; i++) {
-                undo_redo[actual_index][i][0] = employees[i][0];
-                undo_redo[actual_index][i][1] = employees[i][1];
-                undo_redo[actual_index][i][2] = employees[i][2];
-                undo_redo[actual_index][i][3] = employees[i][3];
-                undo_redo[actual_index][i][4] = employees[i][4];
-                undo_redo[actual_index][i][5] = employees[i][5];
-                undo_redo[actual_index][i][6] = employees[i][6];
-                undo_redo[actual_index][i][7] = employees[i][7];
-                undo_redo[actual_index][i][8] = employees[i][8];
-                undo_redo[actual_index][i][9] = employees[i][9];
-                undo_redo[actual_index][i][10] = employees[i][10];
-                undo_redo[actual_index][i][11] = employees[i][11];
-                undo_redo[actual_index][i][12] = employees[i][12];
-                undo_redo[actual_index][i][13] = employees[i][13];
-                undo_redo[actual_index][i][14] = employees[i][14];
-            }
-            for (int i = actual_index + 2; i < 50; i++) {
-                date[i][0] = -1;
-                date[i][1] = -1;
-                date[i][2] = -1;
-                date[i][3] = -1;
-                date[i][4] = -1;
-                for (int j = 0; j < 50; j++) {
-                    undo_redo[i][j][0] = null;
-                    undo_redo[i][j][1] = null;
-                    undo_redo[i][j][2] = null;
-                    undo_redo[i][j][3] = null;
-                    undo_redo[i][j][4] = null;
-                    undo_redo[i][j][5] = null;
-                    undo_redo[i][j][6] = null;
-                    undo_redo[i][j][7] = null;
-                    undo_redo[i][j][8] = null;
-                    undo_redo[i][j][9] = null;
-                    undo_redo[i][j][10] = null;
-                    undo_redo[i][j][11] = null;
-                    undo_redo[i][j][12] = null;
-                    undo_redo[i][j][13] = null;
-                    undo_redo[i][j][14] = null;
-                }
-            }
-            return actual_index + 1;
-        } else if (undo_redo_size == 50 || undo_redo_size == 51) {
+    public static int updateUndoRedo(String[][] employees, String[][][] undo_redo, int[][] date, int actual_index, int initial_day, int day_of_week, int day, int month, int year) {
+        System.out.printf("%d\n\n", actual_index);
+        if (actual_index == 50) {
+            actual_index = 49;
             for (int i = 0; i < 49; i++) {
                 date[i][0] = date[i + 1][0];
                 date[i][1] = date[i + 1][1];
@@ -845,34 +795,33 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                     undo_redo[i][j][14] = undo_redo[i + 1][j][14];
                 }
             }
-            return 50;
-        } else if (actual_index == undo_redo_size - 1) {
-            date[actual_index][0] = initial_day % 7;
-            date[actual_index][1] = day_of_week % 7;
-            date[actual_index][2] = day;
-            date[actual_index][3] = month;
-            date[actual_index][4] = year;
-            for (int i = 0; i < 50; i++) {
-                undo_redo[actual_index][i][0] = employees[i][0];
-                undo_redo[actual_index][i][1] = employees[i][1];
-                undo_redo[actual_index][i][2] = employees[i][2];
-                undo_redo[actual_index][i][3] = employees[i][3];
-                undo_redo[actual_index][i][4] = employees[i][4];
-                undo_redo[actual_index][i][5] = employees[i][5];
-                undo_redo[actual_index][i][6] = employees[i][6];
-                undo_redo[actual_index][i][7] = employees[i][7];
-                undo_redo[actual_index][i][8] = employees[i][8];
-                undo_redo[actual_index][i][9] = employees[i][9];
-                undo_redo[actual_index][i][10] = employees[i][10];
-                undo_redo[actual_index][i][11] = employees[i][11];
-                undo_redo[actual_index][i][12] = employees[i][12];
-                undo_redo[actual_index][i][13] = employees[i][13];
-                undo_redo[actual_index][i][14] = employees[i][14];
-            }
-            return undo_redo_size;
         }
-        return undo_redo_size;
+        date[actual_index][0] = initial_day % 7;
+        date[actual_index][1] = day_of_week % 7;
+        date[actual_index][2] = day;
+        date[actual_index][3] = month;
+        date[actual_index][4] = year;
+        System.out.printf("%d %d %d\n", day, date[actual_index][3], date[actual_index][4]);
+        for (int i = 0; i < 50; i++) {
+            undo_redo[actual_index][i][0] = employees[i][0];
+            undo_redo[actual_index][i][1] = employees[i][1];
+            undo_redo[actual_index][i][2] = employees[i][2];
+            undo_redo[actual_index][i][3] = employees[i][3];
+            undo_redo[actual_index][i][4] = employees[i][4];
+            undo_redo[actual_index][i][5] = employees[i][5];
+            undo_redo[actual_index][i][6] = employees[i][6];
+            undo_redo[actual_index][i][7] = employees[i][7];
+            undo_redo[actual_index][i][8] = employees[i][8];
+            undo_redo[actual_index][i][9] = employees[i][9];
+            undo_redo[actual_index][i][10] = employees[i][10];
+            undo_redo[actual_index][i][11] = employees[i][11];
+            undo_redo[actual_index][i][12] = employees[i][12];
+            undo_redo[actual_index][i][13] = employees[i][13];
+            undo_redo[actual_index][i][14] = employees[i][14];
+        }
+        return actual_index;
     }
+
 
     public static void initializeMatrix(String [][] employees, String [][][] undo_redo) {
         for(int i = 0; i < 50; i++) {
@@ -935,7 +884,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         int [] schedule = new int[3];
         int [][] calendary = new int[12][3];
         int option, id = 1, id_syndicate = 1000, current_employees = 0, day = 0, day_of_week = 0, month = 0, year = 0, initial_day = 0;
-        int actual_index = -1, undo_redo_size = 0;
+        int actual_index = -1, actual_size = -1;
         initializeMatrix(employees, undo_redo);
         // inicialização da agenda de pagamento:
         schedule[0] = -1; // último dia útil do mês
@@ -981,68 +930,44 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                 System.out.println("Funcionário adicionado com sucesso!");
                 id++;
                 id_syndicate++;
-                undo_redo_size++;
                 actual_index++;
-                if(undo_redo_size == 51) {
-                    undo_redo_size = 50;
-                }
-                undo_redo_size = updateUndoRedo(employees, undo_redo, date, actual_index, undo_redo_size, initial_day, day_of_week, day, month, year);
-                actual_index = undo_redo_size - 1;
+                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                actual_size = actual_index;
             }
             else if(option == 2) {
                 removeEmployee(employees, current_employees);
                 System.out.println("Funcionário removido com sucesso!");
-                undo_redo_size++;
                 actual_index++;
-                if(undo_redo_size == 51) {
-                    undo_redo_size = 50;
-                }
-                undo_redo_size = updateUndoRedo(employees, undo_redo, date, actual_index, undo_redo_size, initial_day, day_of_week, day, month, year);
-                actual_index = undo_redo_size - 1;
+                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                actual_size = actual_index;
             }
             else if(option == 3) {
                 addHoursWorked(employees, current_employees);
                 System.out.println("Cartão de ponto adicionado com sucesso!");
-                undo_redo_size++;
                 actual_index++;
-                if(undo_redo_size == 51) {
-                    undo_redo_size = 50;
-                }
-                undo_redo_size = updateUndoRedo(employees, undo_redo, date, actual_index, undo_redo_size, initial_day, day_of_week, day, month, year);
-                actual_index = undo_redo_size - 1;
+                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                actual_size = actual_index;
             }
             else if(option == 4) {
                 addSale(employees, current_employees);
                 System.out.println("Venda adicionada com sucesso!");
-                undo_redo_size++;
                 actual_index++;
-                if(undo_redo_size == 51) {
-                    undo_redo_size = 50;
-                }
-                undo_redo_size = updateUndoRedo(employees, undo_redo, date, actual_index, undo_redo_size, initial_day, day_of_week, day, month, year);
-                actual_index = undo_redo_size - 1;
+                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                actual_size = actual_index;
             }
             else if(option == 5) {
                 addServiceTax(employees, current_employees);
                 System.out.println("Serviço adicionado com sucesso!");
-                undo_redo_size++;
                 actual_index++;
-                if(undo_redo_size == 51) {
-                    undo_redo_size = 50;
-                }
-                undo_redo_size = updateUndoRedo(employees, undo_redo, date, actual_index, undo_redo_size, initial_day, day_of_week, day, month, year);
-                actual_index = undo_redo_size - 1;
+                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                actual_size = actual_index;
             }
             else if(option == 6) {
                 changeData(employees, current_employees, day_of_week, day, month, calendary, schedule);
                 System.out.println("Dado(s) modificado(s) com sucesso!");
-                undo_redo_size++;
                 actual_index++;
-                if(undo_redo_size == 51) {
-                    undo_redo_size = 50;
-                }
-                undo_redo_size = updateUndoRedo(employees, undo_redo, date, actual_index, undo_redo_size, initial_day, day_of_week, day, month, year);
-                actual_index = undo_redo_size - 1;
+                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                actual_size = actual_index;
             }
             else if(option == 7) {
                 System.out.println("Rodar a folha de pagamento irá passar o dia!");
@@ -1077,28 +1002,26 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                     initial_day = day_of_week % 7;
                     updateAllPayment(employees, calendary, day_of_week, day, month);
                 }
-                undo_redo_size++;
                 actual_index++;
-                if(undo_redo_size == 51) {
-                    undo_redo_size = 50;
-                }
-                undo_redo_size = updateUndoRedo(employees, undo_redo, date, actual_index, undo_redo_size, initial_day, day_of_week, day, month, year);
-                actual_index = undo_redo_size - 1;
-                System.out.printf("Folha de pagamento realizada na data %d/%d/%d !\n", date[actual_index][2] - 1, date[actual_index][3] - 1, date[actual_index][4] - 1);
+                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                actual_size = actual_index;
+                System.out.printf("Folha de pagamento realizada!\nAgora é a data %d/%d/%d !\n", date[actual_index][2], date[actual_index][3], date[actual_index][4]);
+                System.out.printf("Actual Index: %d\n", actual_index);
             }
             else if(option == 8) {
-                actual_index = undoRedo(undo_redo, employees, actual_index, undo_redo_size);
+                actual_index = undoRedo(undo_redo, employees, actual_index, actual_size);
+                initial_day = date[actual_index][0];
+                day_of_week = date[actual_index][1];
+                day = date[actual_index][2];
+                month = date[actual_index][3];
+                year = date[actual_index][4];
             }
             else if(option == 9) {
                 System.out.println("Escolher uma nova agenda irá reiniciar os dias restantes para o próximo pagamento do funcionário");
                 chooseSchedule(employees, schedule, calendary, current_employees, day_of_week, day, month);
-                undo_redo_size++;
                 actual_index++;
-                if(undo_redo_size == 51) {
-                    undo_redo_size = 50;
-                }
-                undo_redo_size = updateUndoRedo(employees, undo_redo, date, actual_index, undo_redo_size, initial_day, day_of_week, day, month, year);
-                actual_index = undo_redo_size - 1;
+                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                actual_size = actual_index;
             }
             else if(option == 10) {
                 createNewSchedule(schedule);

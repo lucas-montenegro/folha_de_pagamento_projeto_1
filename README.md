@@ -21,5 +21,5 @@
  -Ao acionar a opção 10, o usuário poderá criar uma nova agenda para a empresa, que é um processo a qual essa nova agenda substituirá a agenda atual e ficará armazenada no array schedule. Além disso, os funcionários anteriores à criação da agenda continuarão recebendo de acordo com a agenda "antiga", até que eles solicitem a adesão à nova agenda ou que algum dado sobre o seu tipo de trabalho seja modificado (olhar opção 6).<br> 
  
  <h3>ESPECIFICAÇÕES</h3>
- -Java utilizado: JDK 12 (conferir)<br>
+ -Java utilizado: JDK 12<br>
  -Programa utilizado para compilar e executar a folha de pagamento: IntelliJ IDEA<br>

@@ -68,7 +68,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         }
     }
 
-    public static void updateAllPayment(String[][] employees, int[][] calendary, int day_of_week, int day, int month) {
+    public static void updateAllPayment(String[][] employees, int[][] calendary, int day_of_week, int day, int month, int year) {
         int days_to_payment, day_of_payment;
         for (int i = 0; i < 50; i++) {
             if (employees[i][0] != null) {
@@ -99,13 +99,13 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                         }
                     } else {
                         int aux_day_of_week = day_of_week + (31 - day) + 1;
-                        calculateCalendary(calendary, aux_day_of_week);
+                        calculateCalendary(calendary, aux_day_of_week, year);
                         if (day_of_payment == -1) {
                             days_to_payment = (31 - day) + calendary[1][1];
                         } else {
                             days_to_payment = (31 - day) + day_of_payment;
                         }
-                        calculateCalendary(calendary, aux_day_of_week - 365);
+                        calculateCalendary(calendary, aux_day_of_week - 365, year);
                     }
                 }
                 employees[i][12] = Integer.toString(days_to_payment);
@@ -113,7 +113,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         }
     }
 
-    public static void updatePayment(String[][] employees, int[][] calendary, int day_of_week, int day, int month, int i) {
+    public static void updatePayment(String[][] employees, int[][] calendary, int day_of_week, int day, int month, int year, int i) {
         int days_to_payment = 0;
         int day_of_payment = Integer.parseInt(employees[i][14]);
         if (employees[i][13].equals("3")) {
@@ -141,13 +141,13 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                 }
             } else {
                 int aux_day_of_week = day_of_week + (31 - day) + 1;
-                calculateCalendary(calendary, aux_day_of_week);
+                calculateCalendary(calendary, aux_day_of_week, year);
                 if (day_of_payment == -1) {
                     days_to_payment = (31 - day) + calendary[1][1];
                 } else {
                     days_to_payment = (31 - day) + day_of_payment;
                 }
-                calculateCalendary(calendary, aux_day_of_week - 365);
+                calculateCalendary(calendary, aux_day_of_week - 365, year);
             }
         }
 
@@ -169,7 +169,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         schedule[2] = aux;
     }
 
-    public static void chooseSchedule(String[][] employees, int[] schedule, int[][] calendary, int current_employees, int day_of_week, int day, int month) {
+    public static void chooseSchedule(String[][] employees, int[] schedule, int[][] calendary, int current_employees, int day_of_week, int day, int month, int year) {
         Scanner input = new Scanner(System.in);
         System.out.println("Digite o id do funcionário ou digite -1 para ver o número de todos os funcionários:");
         String option = input.nextLine();
@@ -192,13 +192,13 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                     int option_int = Integer.parseInt(option) - 1;
                     if (option.equals("1")) {
                         employees[i][14] = Integer.toString(schedule[option_int]);
-                        updatePayment(employees, calendary, day_of_week, day, month, i);
+                        updatePayment(employees, calendary, day_of_week, day, month, year, i);
                     } else if (option.equals("2")) {
                         employees[i][14] = Integer.toString(schedule[option_int]);
-                        updatePayment(employees, calendary, day_of_week, day, month, i);
+                        updatePayment(employees, calendary, day_of_week, day, month, year, i);
                     } else if (option.equals("3")) {
                         employees[i][14] = Integer.toString(schedule[option_int]);
-                        updatePayment(employees, calendary, day_of_week, day, month, i);
+                        updatePayment(employees, calendary, day_of_week, day, month, year, i);
                     }
 
                     break;
@@ -240,7 +240,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         double total;
         System.out.printf("Sálario atual: %.2f\n", actual_salary);
 
-        if (!employees[i][10].equals("0")) {
+        if (!employees[i][10].equals("0") && actual_salary >= 0.0) {
             double taxes = Double.parseDouble(employees[i][10]);
             total = (actual_salary * taxes) / 100.0;
             actual_salary = actual_salary - total;
@@ -254,18 +254,20 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
     }
 
 
-    public static void payroll(String[][] employees, int[][] calendary, int current_employees, int day_of_week, int day, int month) { // adicionar um metodo de tirar a taxa do sindicato em um dia do mes para todo mundo
+    public static void payroll(String[][] employees, int[][] calendary, int current_employees, int day_of_week, int day, int month, int year) {
         for (int i = 0; i < current_employees; i++) {
             double actual_salary = Double.parseDouble(employees[i][6]);
             double taxes = 0;
             double total;
+            double salary;
             int days_to_payment; // updates the quantity of days to the next payment
 
             if (day == 1) { // syndicate´s day of payment
                 if (employees[i][7].equals("1")) {
+                    salary = Double.parseDouble(employees[i][3]);
                     taxes = Double.parseDouble(employees[i][9]);
-                    total = (actual_salary * taxes) / 100.0;
-                    actual_salary = actual_salary - total;
+                    total = (salary * taxes) / 100.0;
+                    actual_salary -= total;
                     System.out.printf("O funcionário %s, de id de sindicato %s, teve descontado %.2f de seu salário pela sua participação no sindicato!\n", employees[i][0], employees[i][8], total);
                     employees[i][6] = Double.toString(actual_salary);
                 }
@@ -279,7 +281,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                 } else {
                     payEmployee(employees, i, actual_salary);
                 }
-                updatePayment(employees, calendary, day_of_week, day, month, i);
+                updatePayment(employees, calendary, day_of_week, day, month, year, i);
                 employees[i][6] = "0";
                 if (employees[i][2].equals("2") && employees[i][5].equals("0")) {
                     employees[i][6] = employees[i][3];
@@ -300,7 +302,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         }
     }
 
-    public static void changeData(String[][] employees, int current_employees, int day_of_week, int day, int month, int[][] calendary, int[] schedule) { // talvez tenha que alterar !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public static void changeData(String[][] employees, int current_employees, int day_of_week, int day, int month, int year, int[][] calendary, int[] schedule) {
         Scanner input = new Scanner(System.in);
         System.out.println("Digite o id do funcionário ou digite -1 para ver o número de todos os funcionários:");
         String option = input.nextLine();
@@ -342,7 +344,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                         if (!employees[i][2].equals(type)) {
                             employees[i][2] = type;
                             updateModeOfPayment(employees, schedule, i);
-                            updatePayment(employees, calendary, day_of_week, day, month, i);
+                            updatePayment(employees, calendary, day_of_week, day, month, year, i);
                             aux = 1;
                         }
                     }
@@ -355,7 +357,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                         if ((employees[i][5].equals("0") && !commission.equals("0")) || (!employees[i][5].equals("0") && commission.equals("0"))) {
                             employees[i][5] = commission;
                             updateModeOfPayment(employees, schedule, i);
-                            updatePayment(employees, calendary, day_of_week, day, month, i);
+                            updatePayment(employees, calendary, day_of_week, day, month, year, i);
                             aux = 1;
                         }
                     }
@@ -637,7 +639,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         }
     }
 
-    public static void addEmployee(String[][] employees, int current_employees, int id, int id_syndicate, int day_of_week, int day, int month, int[][] calendary, int[] schedule) {
+    public static void addEmployee(String[][] employees, int current_employees, int id, int id_syndicate, int day_of_week, int day, int month, int year, int[][] calendary, int[] schedule) {
         Scanner input = new Scanner(System.in);
 
         System.out.println("Digite o nome do funcionário:");
@@ -719,56 +721,114 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                 }
 
                 updateModeOfPayment(employees, schedule, i);
-                updatePayment(employees, calendary, day_of_week, day, month, i);
+                updatePayment(employees, calendary, day_of_week, day, month, year, i);
                 break;
             }
         }
     }
 
-    public static void calculateCalendary(int[][] calendary, int initial_day) {
-        for (int i = 0; i < 12; i++) {
-            if (i == 0 || i == 2 || i == 4 || i == 6 || i == 7 || i == 9 || i == 11) {
-                calendary[i][0] = initial_day;
-                calendary[i][2] = 31;
+    public static int bissexto(int year) {
+        if(year < 100 && year % 4 == 0) {
+            return 1;
+        }
+        if(year % 4 == 0 && year % 100 != 0) {
+            return 1;
+        }
+        if(year % 4 == 0 && year % 400 == 0) {
+            return 1;
+        }
 
-                if ((initial_day + 30) % 7 <= 5 && (initial_day + 30) % 7 > 0) {
-                    calendary[i][1] = 31;
-                } else if ((initial_day + 29) % 7 <= 5 && (initial_day + 29) % 7 > 0) {
-                    calendary[i][1] = 30;
-                } else if ((initial_day + 28) % 7 <= 5 && (initial_day + 28) % 7 > 0) {
-                    calendary[i][1] = 29;
-                }
-                initial_day = (initial_day + 31) % 7;
-            } else if (i == 1) {
-                calendary[i][0] = initial_day;
-                calendary[i][2] = 28;
+        return 0;
+    }
 
-                if ((initial_day + 27) % 7 <= 5 && (initial_day + 27) % 7 > 0) {
-                    calendary[i][1] = 28;
-                } else if ((initial_day + 26) % 7 <= 5 && (initial_day + 26) % 7 > 0) {
-                    calendary[i][1] = 27;
-                } else if ((initial_day + 25) % 7 <= 5 && (initial_day + 25) % 7 > 0) {
-                    calendary[i][1] = 26;
-                }
-                initial_day = (initial_day + 28) % 7;
-            } else if (i == 3 || i == 5 || i == 8 || i == 10) {
-                calendary[i][0] = initial_day;
-                calendary[i][2] = 30;
 
-                if ((initial_day + 29) % 7 <= 5 && (initial_day + 29) % 7 > 0) {
-                    calendary[i][1] = 30;
-                } else if ((initial_day + 28) % 7 <= 5 && (initial_day + 28) % 7 > 0) {
-                    calendary[i][1] = 29;
-                } else if ((initial_day + 27) % 7 <= 5 && (initial_day + 27) % 7 > 0) {
-                    calendary[i][1] = 28;
+    public static void calculateCalendary(int[][] calendary, int initial_day, int year) {
+        if(bissexto(year) == 1) {
+            System.out.println("Entrou");
+            for (int i = 0; i < 12; i++) {
+                if (i == 0 || i == 2 || i == 4 || i == 6 || i == 7 || i == 9 || i == 11) {
+                    calendary[i][0] = initial_day;
+                    calendary[i][2] = 31;
+
+                    if ((initial_day + 30) % 7 <= 5 && (initial_day + 30) % 7 > 0) {
+                        calendary[i][1] = 31;
+                    } else if ((initial_day + 29) % 7 <= 5 && (initial_day + 29) % 7 > 0) {
+                        calendary[i][1] = 30;
+                    } else if ((initial_day + 28) % 7 <= 5 && (initial_day + 28) % 7 > 0) {
+                        calendary[i][1] = 29;
+                    }
+                    initial_day = (initial_day + 31) % 7;
+                } else if (i == 1) {
+                    calendary[i][0] = initial_day;
+                    calendary[i][2] = 29;
+
+                    if ((initial_day + 28) % 7 <= 5 && (initial_day + 28) % 7 > 0) {
+                        calendary[i][1] = 29;
+                    } else if ((initial_day + 27) % 7 <= 5 && (initial_day + 27) % 7 > 0) {
+                        calendary[i][1] = 28;
+                    } else if ((initial_day + 26) % 7 <= 5 && (initial_day + 26) % 7 > 0) {
+                        calendary[i][1] = 27;
+                    }
+                    initial_day = (initial_day + 29) % 7;
+                } else if (i == 3 || i == 5 || i == 8 || i == 10) {
+                    calendary[i][0] = initial_day;
+                    calendary[i][2] = 30;
+
+                    if ((initial_day + 29) % 7 <= 5 && (initial_day + 29) % 7 > 0) {
+                        calendary[i][1] = 30;
+                    } else if ((initial_day + 28) % 7 <= 5 && (initial_day + 28) % 7 > 0) {
+                        calendary[i][1] = 29;
+                    } else if ((initial_day + 27) % 7 <= 5 && (initial_day + 27) % 7 > 0) {
+                        calendary[i][1] = 28;
+                    }
+                    initial_day = (initial_day + 30) % 7;
                 }
-                initial_day = (initial_day + 30) % 7;
+            }
+        }
+        else {
+            for (int i = 0; i < 12; i++) {
+                if (i == 0 || i == 2 || i == 4 || i == 6 || i == 7 || i == 9 || i == 11) {
+                    calendary[i][0] = initial_day;
+                    calendary[i][2] = 31;
+
+                    if ((initial_day + 30) % 7 <= 5 && (initial_day + 30) % 7 > 0) {
+                        calendary[i][1] = 31;
+                    } else if ((initial_day + 29) % 7 <= 5 && (initial_day + 29) % 7 > 0) {
+                        calendary[i][1] = 30;
+                    } else if ((initial_day + 28) % 7 <= 5 && (initial_day + 28) % 7 > 0) {
+                        calendary[i][1] = 29;
+                    }
+                    initial_day = (initial_day + 31) % 7;
+                } else if (i == 1) {
+                    calendary[i][0] = initial_day;
+                    calendary[i][2] = 28;
+
+                    if ((initial_day + 27) % 7 <= 5 && (initial_day + 27) % 7 > 0) {
+                        calendary[i][1] = 28;
+                    } else if ((initial_day + 26) % 7 <= 5 && (initial_day + 26) % 7 > 0) {
+                        calendary[i][1] = 27;
+                    } else if ((initial_day + 25) % 7 <= 5 && (initial_day + 25) % 7 > 0) {
+                        calendary[i][1] = 26;
+                    }
+                    initial_day = (initial_day + 28) % 7;
+                } else if (i == 3 || i == 5 || i == 8 || i == 10) {
+                    calendary[i][0] = initial_day;
+                    calendary[i][2] = 30;
+
+                    if ((initial_day + 29) % 7 <= 5 && (initial_day + 29) % 7 > 0) {
+                        calendary[i][1] = 30;
+                    } else if ((initial_day + 28) % 7 <= 5 && (initial_day + 28) % 7 > 0) {
+                        calendary[i][1] = 29;
+                    } else if ((initial_day + 27) % 7 <= 5 && (initial_day + 27) % 7 > 0) {
+                        calendary[i][1] = 28;
+                    }
+                    initial_day = (initial_day + 30) % 7;
+                }
             }
         }
     }
 
     public static int updateUndoRedo(String[][] employees, String[][][] undo_redo, int[][] date, int actual_index, int initial_day, int day_of_week, int day, int month, int year) {
-        System.out.printf("%d\n\n", actual_index);
         if (actual_index == 50) {
             actual_index = 49;
             for (int i = 0; i < 49; i++) {
@@ -801,7 +861,6 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         date[actual_index][2] = day;
         date[actual_index][3] = month;
         date[actual_index][4] = year;
-        System.out.printf("%d %d %d\n", day, date[actual_index][3], date[actual_index][4]);
         for (int i = 0; i < 50; i++) {
             undo_redo[actual_index][i][0] = employees[i][0];
             undo_redo[actual_index][i][1] = employees[i][1];
@@ -897,8 +956,6 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         System.out.println("Digite o dia da semana do primeiro dia do ano:");
         System.out.printf("(1) - Segunda\n(2) - Terça\n(3) - Quarta\n(4) - Quinta\n(5) - Sexta\n(6) - Sábado\n(7) - Domingo\n");
         initial_day = input.nextInt();
-        calculateCalendary(calendary, initial_day);
-
         System.out.println("Digite o dia da semana da data atual:");
         System.out.printf("(1) - Segunda\n(2) - Terça\n(3) - Quarta\n(4) - Quinta\n(5) - Sexta\n(6) - Sábado\n(7) - Domingo\n");
         day_of_week = input.nextInt();
@@ -908,7 +965,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         month = input.nextInt();
         System.out.println("Digite o ano da data atual:");
         year = input.nextInt();
-
+        calculateCalendary(calendary, initial_day, year);
 
         while(true) {
             System.out.println("Digite uma das opções abaixo para executar o programa:");
@@ -926,7 +983,7 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                 break;
             }
             else if(option == 1) {
-                addEmployee(employees, current_employees, id, id_syndicate, day_of_week, day, month, calendary, schedule);
+                addEmployee(employees, current_employees, id, id_syndicate, day_of_week, day, month, year, calendary, schedule);
                 System.out.println("Funcionário adicionado com sucesso!");
                 id++;
                 id_syndicate++;
@@ -963,15 +1020,14 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                 actual_size = actual_index;
             }
             else if(option == 6) {
-                changeData(employees, current_employees, day_of_week, day, month, calendary, schedule);
+                changeData(employees, current_employees, day_of_week, day, month, year, calendary, schedule);
                 System.out.println("Dado(s) modificado(s) com sucesso!");
                 actual_index++;
                 actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
                 actual_size = actual_index;
             }
             else if(option == 7) {
-                System.out.println("Rodar a folha de pagamento irá passar o dia!");
-                payroll(employees, calendary, current_employees, day_of_week, day, month);
+                payroll(employees, calendary, current_employees, day_of_week, day, month, year);
                 day++;
                 day_of_week++;
 
@@ -995,18 +1051,17 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                 }
 
                 if(month == 13) { //todo ano novo o pagamento é reiniciado
-                    calculateCalendary(calendary, day_of_week);
                     day = 1;
                     month = 1;
                     year++;
                     initial_day = day_of_week % 7;
-                    updateAllPayment(employees, calendary, day_of_week, day, month);
+                    calculateCalendary(calendary, day_of_week, year);
+                    updateAllPayment(employees, calendary, day_of_week, day, month, year);
                 }
                 actual_index++;
                 actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
                 actual_size = actual_index;
-                System.out.printf("Folha de pagamento realizada!\nAgora é a data %d/%d/%d !\n", date[actual_index][2], date[actual_index][3], date[actual_index][4]);
-                System.out.printf("Actual Index: %d\n", actual_index);
+                System.out.printf("Folha de pagamento realizada!\nEstamos na data %d/%d/%d !\n", date[actual_index][2], date[actual_index][3], date[actual_index][4]);
             }
             else if(option == 8) {
                 actual_index = undoRedo(undo_redo, employees, actual_index, actual_size);
@@ -1014,11 +1069,14 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
                 day_of_week = date[actual_index][1];
                 day = date[actual_index][2];
                 month = date[actual_index][3];
-                year = date[actual_index][4];
+                if(year != date[actual_index][4]) {
+                    year = date[actual_index][4];
+                    calculateCalendary(calendary, initial_day, year);
+                }
             }
             else if(option == 9) {
                 System.out.println("Escolher uma nova agenda irá reiniciar os dias restantes para o próximo pagamento do funcionário");
-                chooseSchedule(employees, schedule, calendary, current_employees, day_of_week, day, month);
+                chooseSchedule(employees, schedule, calendary, current_employees, day_of_week, day, month, year);
                 actual_index++;
                 actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
                 actual_size = actual_index;
@@ -1029,16 +1087,6 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
 
             System.out.printf("\n-------------------------------------------------------\n");
             current_employees = updateCurrentEmployee(employees);
-            System.out.printf("Current Employees -> %d\n\n", current_employees);
-        }
-
-        for(int i = 0; i < current_employees; i++) {
-            System.out.printf("Nome: %s\n", employees[i][0]);
-            System.out.printf("Tipo: %s\n", employees[i][2]);
-            System.out.printf("Salário Atual: %s\n", employees[i][6]);
-            System.out.printf("Sindicato: %s\n", employees[i][7]);
-            System.out.printf("Taxa sindicato: %s\n", employees[i][9]);
-            System.out.printf("Id sindicato: %s\n\n", employees[i][8]);
         }
 
         for(int i = 0; i < 12; i++) {
@@ -1051,7 +1099,8 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
     }
 }
 
-/* MATRIZ employees(colunas):
+/*
+MATRIZ employees(colunas):
    0 -> nome
    1 -> endereço
    2 -> tipo
@@ -1086,8 +1135,4 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
    day_of_week % 7 = 5 -> Sexta
    day_of_week % 7 = 6 -> Sábado
    day_of_week % 7 = 0 -> Domingo
-
-   Obs2: A taxa do sindicato é retirada no último dia útil do mês de todos que fazem parte do sindicato
-
-   Obs3: O usuário poderá fazer no máximo 1 undo e 1 redo
  */

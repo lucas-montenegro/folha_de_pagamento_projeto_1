@@ -73,7 +73,7 @@ public class Menu {
         for (int i = 0; i < 50; i++) {
             if (employees[i][0] != null) {
                 days_to_payment = 0;
-                day_of_payment = Integer.parseInt(employees[i][14]);
+                day_of_payment = Integer.parseInt(employees[i][14]) % 7;
                 if (employees[i][13].equals("3")) {
                     if (day_of_week % 7 == day_of_payment % 7) {
                         days_to_payment = 7;
@@ -115,7 +115,7 @@ public class Menu {
 
     public static void updatePayment(String[][] employees, int[][] calendary, int day_of_week, int day, int month, int year, int i) {
         int days_to_payment = 0;
-        int day_of_payment = Integer.parseInt(employees[i][14]);
+        int day_of_payment = Integer.parseInt(employees[i][14]) % 7;
         if (employees[i][13].equals("3")) {
             if (day_of_week % 7 == day_of_payment % 7) {
                 days_to_payment = 7;
@@ -300,6 +300,7 @@ public class Menu {
             days_to_payment = Integer.parseInt(employees[i][12]) - 1;
             employees[i][12] = Integer.toString(days_to_payment);
         }
+        System.out.printf("Folha de pagamento realizada na data %d/%d/%d !\n", day, month, year);
     }
 
     public static void changeData(String[][] employees, int current_employees, int day_of_week, int day, int month, int year, int[][] calendary, int[] schedule) {
@@ -983,13 +984,18 @@ public class Menu {
                 break;
             }
             else if(option == 1) {
-                addEmployee(employees, current_employees, id, id_syndicate, day_of_week, day, month, year, calendary, schedule);
-                System.out.println("Funcionário adicionado com sucesso!");
-                id++;
-                id_syndicate++;
-                actual_index++;
-                actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
-                actual_size = actual_index;
+                if(current_employees <= 48) {
+                    addEmployee(employees, current_employees, id, id_syndicate, day_of_week, day, month, year, calendary, schedule);
+                    System.out.println("Funcionário adicionado com sucesso!");
+                    id++;
+                    id_syndicate++;
+                    actual_index++;
+                    actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
+                    actual_size = actual_index;
+                }
+                else {
+                    System.out.println("Não é possível adicionar mais funcionários");
+                }
             }
             else if(option == 2) {
                 removeEmployee(employees, current_employees);
@@ -1061,7 +1067,7 @@ public class Menu {
                 actual_index++;
                 actual_index = updateUndoRedo(employees, undo_redo, date, actual_index, initial_day, day_of_week, day, month, year);
                 actual_size = actual_index;
-                System.out.printf("Folha de pagamento realizada!\nEstamos na data %d/%d/%d !\n", date[actual_index][2], date[actual_index][3], date[actual_index][4]);
+                System.out.printf("Estamos na data %d/%d/%d !\n", date[actual_index][2], date[actual_index][3], date[actual_index][4]);
             }
             else if(option == 8) {
                 actual_index = undoRedo(undo_redo, employees, actual_index, actual_size);
@@ -1087,12 +1093,6 @@ public class Menu {
 
             System.out.printf("\n-------------------------------------------------------\n");
             current_employees = updateCurrentEmployee(employees);
-        }
-
-        for(int i = 0; i < 12; i++) {
-            System.out.printf("Mês: %d\n", i + 1);
-            System.out.printf("Dia inicial: %d\n", calendary[i][0]);
-            System.out.printf("Último dia útil: %d\n\n", calendary[i][1]);
         }
 
         System.out.println("Obrigado por utilizar o nosso sistema!");

@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
+public class Menu { 
     public static void printar_dados(String[][] employees, int i) {
         System.out.printf("Nome: %s\n", employees[i][0]);
         System.out.printf("Endereço: %s\n", employees[i][1]);
@@ -1098,41 +1098,3 @@ public class Menu { //ALTERAR A FOMRA COMO O SINDICATO COBRA
         System.out.println("Obrigado por utilizar o nosso sistema!");
     }
 }
-
-/*
-MATRIZ employees(colunas):
-   0 -> nome
-   1 -> endereço
-   2 -> tipo
-   3 -> salário
-   4 -> id
-   5 -> porcentagem da comissao
-   6 -> salário atual
-   7 -> pertence sindicato
-   8 -> id no sindicato
-   9 -> taxa do sindicato
-   10 -> taxa do servico
-   11 -> metodo de pagamento
-   12 -> dias para o pagamento
-   13 -> modo de pagamento(mensalmente, bi-semanalmente, semanalmente)
-   14 -> dia que é pago(do mês ou da semana)
-
-   MATRIZ calendary(colunas):
-   0 -> dia inicial do mês (segunda, terça...)
-   1 -> último dia útil do mês (28, 29...)
-   2 -> quantidade de dias do mês
-
-   ARRAY schedule(colunas):
-   0 -> Dia pago mensalmente(1, 2, 3, 17, 18...)
-   1 -> Dia pago bi-semanalmente(1(segunda), 2(terça), 3(quarta)...)
-   2 -> Dia pago semanalmente(1(segunda), 2(terça), 3(quarta)...)
-
-   Obs: Em relação ao dia, temos:
-   day_of_week % 7 = 1 -> Segunda
-   day_of_week % 7 = 2 -> Terça
-   day_of_week % 7 = 3 -> Quarta
-   day_of_week % 7 = 4 -> Quinta
-   day_of_week % 7 = 5 -> Sexta
-   day_of_week % 7 = 6 -> Sábado
-   day_of_week % 7 = 0 -> Domingo
- */

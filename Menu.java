@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Menu { 
+public class Menu {
     public static void printar_dados(String[][] employees, int i) {
         System.out.printf("Nome: %s\n", employees[i][0]);
         System.out.printf("Endereço: %s\n", employees[i][1]);
@@ -320,8 +320,9 @@ public class Menu {
         for (int i = 0; i < 50; i++) {
             if (employees[i][4] != null) {
                 if (employees[i][4].equals(option)) {
+                    System.out.println("Dados antes da modificação:");
                     printar_dados(employees, i);
-                    System.out.println("Digite 1 para modificar o nome e 0 para não modificar");
+                    System.out.println("Digite 1 para modificar o nome e 0 para não modificar:");
                     option = input.nextLine();
                     if (option.equals("1")) {
                         System.out.println("Digite o nome:");
@@ -397,7 +398,7 @@ public class Menu {
                         employees[i][4] = new_id;
                     }
 
-                    System.out.println("Digite 1 para modificar a quantia do próximo contracheque e 0 para não modificar");
+                    System.out.println("Digite 1 para modificar a quantia do próximo contracheque e 0 para não modificar:");
                     option = input.nextLine();
                     if (option.equals("1")) {
                         System.out.println("Digite o valor do novo contracheque:");
@@ -461,6 +462,7 @@ public class Menu {
                     }
 
                     System.out.println("Alterações completas!");
+                    System.out.println("Dados depois da alteração");
                     printar_dados(employees, i);
                 }
             }
@@ -745,7 +747,6 @@ public class Menu {
 
     public static void calculateCalendary(int[][] calendary, int initial_day, int year) {
         if(bissexto(year) == 1) {
-            System.out.println("Entrou");
             for (int i = 0; i < 12; i++) {
                 if (i == 0 || i == 2 || i == 4 || i == 6 || i == 7 || i == 9 || i == 11) {
                     calendary[i][0] = initial_day;
@@ -994,7 +995,7 @@ public class Menu {
                     actual_size = actual_index;
                 }
                 else {
-                    System.out.println("Não é possível adicionar mais funcionários");
+                    System.out.println("Não é possível adicionar mais funcionários.");
                 }
             }
             else if(option == 2) {
